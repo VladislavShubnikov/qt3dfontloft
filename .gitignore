@@ -1,0 +1,6 @@
+syntax: glob
+thumbs.db
+Thumbs.db
+*.pyc
+*.bak
+build/
