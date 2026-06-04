@@ -125,7 +125,7 @@ set(APP_SOURCES
 
 # add resource qrc file
 set (APP_FILES ${APP_SOURCES} res/resources.qrc)
-                   
+
 add_executable(${APP_PRJ} ${APP_FILES})
 
 # Add the Qt5 Widgets for linking

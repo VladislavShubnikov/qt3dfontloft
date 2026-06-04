@@ -7,5 +7,6 @@
     <file>icon_R.png</file>
     <file>icon_W.png</file>
     <file>icon_Z.png</file>
+    <file>app_icon_256.png</file>
   </qresource>
 </RCC>

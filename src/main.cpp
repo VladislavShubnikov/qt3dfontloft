@@ -14,10 +14,12 @@
 
 int main(int argc, char *argv[])
 {
-    QApplication a(argc, argv);
+    QApplication app(argc, argv);
+    app.setWindowIcon(QIcon(":/app_icon_256.png"));
+
     // NOLINTNEXTLINE
     MainWindow w;
     w.show();
 
-    return a.exec();
+    return app.exec();
 }

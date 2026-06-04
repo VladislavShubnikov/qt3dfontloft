@@ -3,4 +3,5 @@ thumbs.db
 Thumbs.db
 *.pyc
 *.bak
+*.obj
 build/
