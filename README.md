@@ -65,6 +65,6 @@ src
 
   OBJ viewer:
   https://www.meshy.ai/3d-tools/online-viewer/obj
+- In future maybe add "open arbitrary OBJ file" function in menu.
 
-- Fix app freeze after intensive slider change
 - Add Linux/Ubuntu version

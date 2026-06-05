@@ -28,6 +28,9 @@
 
 namespace geo
 {
+	/**
+	* @brief Run simple unit-tests to check clipping geometry functionality correctness
+	*/
 	void testRun();
 } // namespace geo
 

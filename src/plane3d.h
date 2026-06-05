@@ -31,6 +31,10 @@
 namespace geo
 {
 
+/**
+ * @struct Plane3d
+ * @brief 3D plane used for 3D mesh clipping
+ */
 struct Plane3d
 {
 	Point3f point_{ 0.0F, 0.0F, 0.0F };

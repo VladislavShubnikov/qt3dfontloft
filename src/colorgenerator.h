@@ -30,19 +30,27 @@
 
 namespace app
 {
-//! 1 minus eps
-constexpr float kAlmostOne{ 0.999999F };
 
+/**
+ * @class ColorGenerator
+ * @brief Simple color generator for produced 3D meshed suring build or clipping
+ */
 class ColorGenerator
 {
 public:
     ColorGenerator();
 
-    geo::Point3f nextColor();
+	/**
+	* @brief Get next color value for produced meshes
+	* @return color with 3 components
+	*/
+	geo::Point3f nextColor();
 
 private:
+	//! internal counter, used to generate colors
     int decComponent_{ 1 };
-    geo::Point3f color_{ 0.0F, kAlmostOne, 0.0F };
+	//! iterated color value
+    geo::Point3f color_{ 0.0F, geo::kFloatAlmostOne, 0.0F };
 }; // class ColorGenerator
 
 } // namespace app

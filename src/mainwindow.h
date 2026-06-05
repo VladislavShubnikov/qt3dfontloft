@@ -41,27 +41,17 @@ namespace Ui
     class MainWindow;
 }
 
-
-class MainWindow : public QMainWindow
+/**
+* @class MainWindow
+* @brief Main ap window with menu and toolbar with icons (3D mesh selection)
+*/
+class MainWindow: public QMainWindow
 {
     Q_OBJECT
 
 public:
     explicit MainWindow(QWidget *parent = 0);
     ~MainWindow() = default;
-
-    //void notifyDialogDeleted();
-    // apply new brightness, contrast from non-modal dialog
-    //void notifyNewBrightnessContrast(const image::EnhanceParameters& params);
-
-    // to trace mouse move events and show intensity
-    //bool eventFilter(QObject* obj, QEvent* event) override;
-
-protected:
-    // to modify brightness, contrast with keys: W, A, S, D
-    //void keyPressEvent(QKeyEvent* event) override;
-
-signals:
 
 private slots:
     void onClipped(int state);
@@ -77,6 +67,7 @@ private slots:
 
 private:
 
+    //! reaction on UI event: press on character load icon
     void onLoadCharacter(const QString& character);
 
     //! interface from UI

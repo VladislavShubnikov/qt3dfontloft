@@ -32,6 +32,13 @@
 namespace geo
 {
 
+/**
+* @class MeshTriangleBuilder
+* @brief Create mesh from triangles, one by one
+*
+* @note Shared vertices are taken into account. Produced mesh has no duplicated vertices.
+*
+*/
 class MeshTriangleBuilder
 {
 public:
@@ -42,6 +49,10 @@ public:
 	MeshTriangleBuilder& operator=(const MeshTriangleBuilder&) = default;
 	MeshTriangleBuilder& operator=(MeshTriangleBuilder&&) = default;
 
+	/**
+	* @brief Add triangle to mesh
+	* @param triVerts added triangle vertices
+	*/
 	void addTriangle(const std::vector<geo::Point3f>& triVerts);
 
 private:

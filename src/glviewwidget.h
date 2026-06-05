@@ -40,6 +40,15 @@
 
 constexpr float kDefaultHeight{ 0.12F };
 
+/**
+ * @class GlViewWidget
+ * @brief Widget with OpenGL render ouput
+ * 
+ * This widget uses source 3D meshes to create openGL render meshes
+ * 
+ * @note Wireframe render is not implemehted here
+ * 
+ */
 class GlViewWidget: public QOpenGLWidget, protected QOpenGLFunctions
 {
 	Q_OBJECT
@@ -54,17 +63,56 @@ public:
 	GlViewWidget& operator=(GlViewWidget&&) = delete;
 	// NOLINTEND
 
+	/**
+	* @brief Assign extern 2D font letter contour to the 3d mesh oject.
+	* 3D loft creates here using @ref geo::Mesh3dBuilder
+	* @param contourObject set of input 2d contours
+	*/
 	void setContour(const geo::Contour& contourObject);
 
 public slots: // NOLINT(cppcoreguidelines-non-private-member-variables-in-classes)
+
+
+	/**
+	* @brief Reaction on user interface change in 1st slider: clipping angle vaue set
+	* @param sliderValue Value in [0..90]
+	*/
 	void onAngleAroundY(int sliderValue);
+
+	/**
+	* @brief Reaction on user interface change in 2st slider: artificial distance between clipped meshed
+	* @param sliderValue Value in [0..100]
+	*/
 	void onSliderHeight(int sliderValue);
+
+	/**
+	* @brief Switch on/off clipping during 3D mesh render
+	* @param state, see @ref Qt::Checked
+	*/
 	void onClipped(int state);
+
+	/**
+	* @brief Switch on/off show artificial 3D axises
+	* @param state, see @ref Qt::Checked
+	*/
 	void onAxis(int state);
+
+	/**
+	* @brief Open dialog with OBJ file name selection and perform save to OBJ format
+	*/
 	void onActionSaveObj();
 	
 protected:
+
+	/**
+	* @brief Create 3d meshes for axis, boxes and if 3D mesh is ready,
+	* create gl data for rendering. GL shader compilation is also performs here
+	*/
 	void initializeGL() override;
+
+	/**
+	* @brief Calculate current view matrix based on camera position
+	*/
 	void paintGL() override;
 
 	// receive all mouse events
@@ -75,9 +123,20 @@ protected:
 	void keyPressEvent(QKeyEvent* event) override;
 
 private:
-
+	/**
+	* @brief Show source 3D mesh set without clipping
+	*/
 	void showSourceMesh();
+
+	/**
+	* @brief Perform source 3D mesh clipping by current clip plane
+	*/
 	void clipByPlane();
+
+	/**
+	* @brief Save current clipped 3D mesh to *.OBJ text file to see
+	* 3D object in the external obj file viewer
+	*/
 	void saveMeshesToObj();
 
 	//! rotation around vertical axis in graduses
@@ -86,6 +145,7 @@ private:
 	//! rotation around right vector
 	float rotationAroundRight_{ 0.0F };
 
+	//! default camera distance to zero point
 	const float defaultRadius_{ 2.0F };
 
 	//! eye rotation radius
@@ -100,6 +160,7 @@ private:
 	//! special flag to avoid init GL again for new contour
 	bool glInitialized_{ false };
 
+	//! compiler openGL shader
 	std::unique_ptr<QOpenGLShaderProgram> program_{};
 
 	//! meshes, received from 2d contours for render

@@ -31,17 +31,51 @@
 namespace geo
 {
 
-class ContourTools
+    /**
+     * @class ContourTools
+     * @brief Split concave contour into set of conve ones
+     */
+    class ContourTools
 {
 public:
+
+    /**
+    * @brief Split concave contour into set of convex contours
+    * @note this operation if performed only if contour is concave.
+    * Please see @ref splitConcaveContour for more details
+    * @param points source points of concave contour
+    */
     static [[nodiscard]] ArrayContours2f splitToConvexContours(const geo::ArrayContour2f& points);
 
+    /**
+    * @brief Check is contour points convex
+    * @param points source points of contour
+    */
     static [[nodiscard]] bool pointsConvex(const geo::ArrayContour2f& points);
+
+    /**
+    * @brief Invert vertices order in contour (if need) to make
+    * vertices order counter clock wise (used later to produce 3D mesh as loft)
+    * @param points source points of contour
+    */
     static void makePointsCounterClockwise(geo::ArrayContour2f& points);
 
+    /**
+    * @brief Split concave contour into set (may be more than two) of convex contours
+    * @note Split is performed in some correct, but not optimal way
+    * Maybe this can be a point for the future clipping improvement
+    * @param points source points of concave contour
+    */
     static [[nodiscard]] geo::ArrayContours2f
         splitConcaveContour(const geo::ArrayContour2f& points);
 
+    /**
+    * @brief Split input 2D polygone into two
+    * @note search for the first new edge between vertices with conditions:
+    * 1) edge lie inside the polygon
+    * 2) this edge dont add self intersections
+    * @param poly
+    */
     static std::pair<geo::ArrayContour2f, geo::ArrayContour2f> splitPolyInTwo(const geo::ArrayContour2f& poly);
 
 private:

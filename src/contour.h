@@ -36,15 +36,45 @@ namespace geo
 using ArrayContour2f = std::vector<geo::Point2f>;
 using ArrayContours2f = std::vector<ArrayContour2f>;
 
+
+/**
+ * @class Contour
+ * @brief Implement read json source files (in data folder) to create source 2D contours
+ *
+ * @note Here, in this app, font character contours are used, but it can be any
+ * contours. Maybe, for better app testing, it can be nice to have a large set 
+ * of artificially generated 2D contours with different forms
+ */
 class Contour
 {
 public:
+
+	/**
+	* @brief Read 2d contours from 
+	* @param character character, used to build source json file name to read
+	* @return true if read was successfull
+	*/
 	bool readCharacterFromJson(const QString& character);
+
+	/**
+	* @brief Read 2d contours from
+	* @return loaded 2D contours data
+	*/
 	[[nodiscard]] ArrayContours2f getContours() const;
+
+	/**
+	* @brief Special operation to remove duplicated points in vertices data
+	*/
 	void removeDuplicates();
+
+	/**
+	* @brief Scale 2d contour vertices to the given scale
+	* @param scale size to fit
+	*/
 	void scaleTo(float side = 1.0F);
 
 private:
+	//! Loaded 2d contours
 	ArrayContours2f contours_{};
 };
 

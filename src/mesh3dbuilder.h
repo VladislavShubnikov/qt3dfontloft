@@ -32,20 +32,65 @@
 namespace geo
 {
 
+/**
+* @class Mesh3dBuilder
+* @brief Builder for 3d mesh
+* @note Simple loft operation is performed here to create 3D mesh from 2D contour
+*/
 class Mesh3dBuilder
 {
 public:
-    //! vLookTo can be (1,0,0) or (0,1,0) or (0,0,1)
+    
+    /**
+    * @brief Create axis mesh. source vector vLookTo should be one from (0,0,1), (0,1,0) or (0,0,1)
+    * @param vLookTo axis look vector
+    * @param outMesh output 3D mesh
+    */
     static void createAxis(const geo::Point3f& vLookTo, geo::Mesh3d& outMesh);
+
+    /**
+    * @brief Create 3d cube mesh.
+    * @param side side of cube
+    * @param outMesh output 3D mesh
+    */
     static void createCube(float side, geo::Mesh3d& outMesh);
+
+    /**
+    * @brief Create 3d cylinder mesh.
+    * @param radius cylinde radius
+    * @param height cylinder height
+    * @param numSides number of sides
+    * @param outMesh output 3D mesh
+    */
     static void createCylinder(float radius, float height, int numSides, geo::Mesh3d& outMesh);
 
+    /**
+    * @brief Parform += v operation on mesh
+    * @param vAdd vector to add to all vertices
+    * @param outMesh output 3D mesh
+    */
     static void translateMesh(const geo::Point3f& vAdd, geo::Mesh3d& outMesh);
+
+    /**
+    * @brief Calculate vertices normals, based on triangle normals
+    * @param mesh in and out 3D mesh
+    */
     static void calcVertexNormalsByTriNormals(geo::Mesh3d& mesh);
 
-    //! points are convex polygone
+    /**
+    * @brief Build 3D mesh from 2D contour(s) points
+    * @note points of contours
+    * @param mesh out 3D mesh
+    */
     static void build3dMeshFromPoints(const ArrayContour2f& points, Mesh3d& outMesh);
 
+    /**
+    * @brief Build 3D mesh (loft) from 2D contour(s) points with given min and max value on 3rd dimension
+    * @note points of contours
+    * @param mesh out 3D mesh
+    * @param yMin minimum on y for loft
+    * @param yMax maximum on y for loft
+    */
     static void build3dMeshFromConcavePoints(const ArrayContour2f& points, Mesh3d& outMesh, float yMin, float yMax);
 };
 

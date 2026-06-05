@@ -33,28 +33,75 @@
 namespace geo
 {
 
+/**
+* @enum ClipResult
+* @brief Get result of clipping 3D triangle by plane
+* @note All vertices can be from plane positive side, negative side, or clipped
+*/
 enum class ClipResult : uint8_t
 {
+	//! Clipped object on positive side of plane
 	kOnPositiveSide = 0,
+	//! Clipped object on negative side of plane
 	kOnNegativeSide = 1,
+	//! Clipped object is clipped by plane
 	kClipped = 2
 };
 
+/**
+* @class Mesh3dClip
+* @brief Clip 3d mesh
+* @note Clipping result is pair of meshes
+*/
 class Mesh3dClip
 {
 public:
+	/**
+	* @brief Check can mesh be clipped by plane
+	* @param mesh checked mesh
+	* @param plane clip plane 
+	* @return true if can be clipped
+	*/
 	static [[nodiscard]] bool canBeClipped(const geo::Mesh3d& mesh, const geo::Plane3d& plane);
 
+	/**
+	* @brief Clip mesh by plane
+	* @param mesh Mesh to be cliped
+	* @param plane clipping plabe
+	* @return pair of meshes, as clipping result
+	*/
 	static [[nodiscard]]  std::pair<geo::Mesh3d, geo::Mesh3d> clipMesh(
 		const geo::Mesh3d& mesh, 
 		const geo::Plane3d& plane);
 
+	/**
+	* @brief Check is triangle clipped by plane
+	* @param pointsTri 3 points of trinagle
+	* @param plane clipping plane
+	* @return Clipping status
+	*/
 	static [[nodiscard]] geo::ClipResult triangleClipped(const ArrayPoint3f& pointsTri, const geo::Plane3d& plane);
 
+	/**
+	* @brief Clip trinagle by plane
+	* @param pointsTri 3 points of trinagle
+	* @param plane clipping plane
+	* @return pair of triangle meshes
+	*/
 	static std::pair<geo::ArrayPoint3f, geo::ArrayPoint3f> clipTriangle(
 		const ArrayPoint3f& pointsTri,
 		const geo::Plane3d& plane);
 
+	/**
+	* @brief Check is line can be clipped by plane
+	* @param va first vertex of line
+	* @param vb second vertex of line
+	* @param plane clipping plane
+	* @param vOutClip clip result vertex
+	* @param aPos true if vertex a is on positive side of plane
+	* @param bPos true if vertex b is on positive side of plane
+	* @return true if line clipped by plane
+	*/
 	static [[nodiscard]] bool lineClipped(
 		const geo::Point3f& va, 
 		const geo::Point3f& vb, 
@@ -63,6 +110,11 @@ public:
 		bool& aPos,
 		bool& bPos);
 
+	/**
+	* @brief Check mesh for unreferences vertices
+	* @param mesh Mesh to check
+	* @return true if no unreferenceed vertices found
+	*/
 	static [[nodiscard]] bool checkTopology(const geo::Mesh3d& mesh);
 };
 

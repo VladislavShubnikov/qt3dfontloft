@@ -34,11 +34,26 @@
 namespace geo
 {
 
+/**
+* @class Mesh3dSaver
+* @brief Saver functionality for 3D mesh
+*/
 class Mesh3dSaver
 {
 public:
+	/**
+	* @brief Save single mesh object to OBJ format string
+	* @param mesh input mesh
+	* @return string representation of OBJ file
+	*/
     static [[nodiscard]] QString saveToObjString(const geo::Mesh3d& mesh);
-    static [[nodiscard]] QString saveToObjString(const std::vector<geo::Mesh3d>& meshes);
+
+	/**
+	* @brief Save mesh set to OBJ format string
+	* @param mesh input meshes
+	* @return string representation of OBJ file
+	*/
+	static [[nodiscard]] QString saveToObjString(const std::vector<geo::Mesh3d>& meshes);
 }; // class Mesh3DSaver
 
 } // namespace geo

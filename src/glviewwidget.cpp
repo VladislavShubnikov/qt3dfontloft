@@ -425,7 +425,6 @@ void GlViewWidget::saveMeshesToObj() // NOLINT
         return;
     }
 
-
     std::vector<geo::Mesh3d> meshes;
 
     for (geo::GlMesh3d& glMesh : renderMeshes_)
@@ -470,7 +469,7 @@ void GlViewWidget::onAxis(int state) // NOLINT
 
 void GlViewWidget::onAngleAroundY(int sliderValue)
 {
-    // get clipping angle from slider
+    // get clipping angle from slider, slider value in [0..90]
     const auto angleFloat01 = static_cast<float>(sliderValue);
     const float angleRad{ angleFloat01 * std::numbers::pi_v<float> / 180.0F }; // NOLINT
     clipPlane_.normal_.x_ = 1.0F;
@@ -486,6 +485,7 @@ void GlViewWidget::onSliderHeight(int sliderValue) // NOLINT
     // assume we have source slider values in [0..24] with "central" value == 12
     // need to transform this range into [0.. 0.24]
     // 
+    // actual input range in [0..100]
     // NOLINTNEXTLINE
     constexpr float kScaleFromSlider{ 1.0F / 100.0F };
     clipHeight_ = static_cast<float>(sliderValue) * kScaleFromSlider;

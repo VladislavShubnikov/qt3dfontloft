@@ -34,7 +34,15 @@
 namespace geo
 {
 
-constexpr float kFloatAlmostOne{ 0.99999F };
+/**
+* @class Mesh3d
+* @brief Geometry of 3D mesh (set of meshes)
+*
+* @note 3D mesh is produced from 2D contours. For many font letters
+* this is a set of contours
+* Clipping operation is performed under this data structure
+*
+*/
 class Mesh3d
 {
 public:
@@ -47,9 +55,24 @@ public:
     ~Mesh3d();
     Mesh3d(Mesh3d&& other) noexcept;
 
+    /**
+    * @brief Get source vertices, used for GL render
+    * @return 3D vertices
+    */
     std::vector<Point3f> vertices_{};
+
+    /**
+    * @brief Get source vertex normals, used for GL render
+    * @return 3D vertex normals
+    */
     std::vector<Point3f> normals_{};
+
+    /**
+    * @brief Get source vertex normals, used for GL render
+    * @return 3D vertex normals
+    */
     std::vector<uint32_t> indices_{}; // 3 * number of triangles
+
     //! Material color for this mesh
     Point3f color_{0.0F, kFloatAlmostOne, 0.0F};
 };

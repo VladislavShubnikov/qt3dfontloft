@@ -32,12 +32,23 @@
 namespace geo
 {
 
+//! Almost 1.0 value
+constexpr float kFloatAlmostOne{ 0.99999F };
+
+/**
+* @struct Point2d
+* @brief 2d integer point
+*/
 struct Point2d
 {
     int x_{ 0 };
     int y_{ 0 };
 };
 
+/**
+* @struct Point2f
+* @brief 2d float point
+*/
 struct Point2f
 {
     float x_{ 0.0F };
@@ -63,6 +74,10 @@ geo::Point2f operator-(const geo::Point2f& pa, const geo::Point2f& pb);
 geo::Point2f operator+(const geo::Point2f& pa, const geo::Point2f& pb);
 
 
+/**
+* @struct Point3f
+* @brief 3d float point
+*/
 struct Point3f
 {
     float x_{ 0.0F };
@@ -96,6 +111,10 @@ geo::Point3f crossProduct(const geo::Point3f& pa, const geo::Point3f& pb);
 
 using ArrayPoint3f = std::vector<geo::Point3f>;
 
+/**
+* @struct Rect2f
+* @brief 2d float point rectangle, used as bounding box
+*/
 struct Rect2f
 {
     Point2f pMin_;

@@ -27,7 +27,7 @@
 #include "colorgenerator.h"
 
 app::ColorGenerator::ColorGenerator()
-    : color_(0.0F, kAlmostOne, 0.0F)
+    : color_(0.0F, geo::kFloatAlmostOne, 0.0F)
 {
 }
 

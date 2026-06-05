@@ -36,7 +36,13 @@
 namespace geo
 {
 
-class GlMesh3d : public QOpenGLFunctions
+/**
+* @class GlMesh3d
+* @brief 3D mesh with openGL render functionality
+*
+* @note Mesh data stores here in order to clip source mesh if need
+*/
+class GlMesh3d: public QOpenGLFunctions
 {
 public:
     GlMesh3d() = default;
