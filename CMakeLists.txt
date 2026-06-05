@@ -24,7 +24,7 @@ else()
   set(PATH_QT_CMAKE "$ENV{QTDIR}/lib/cmake")
 
   # print path
-  message(STATUS "!!! path to qt cmake: ${PATH_QT_CMAKE}")
+  message(STATUS "detected path to qt cmake: ${PATH_QT_CMAKE}")
 
   set(CMAKE_PREFIX_PATH "${PATH_QT_CMAKE}")
 

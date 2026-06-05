@@ -24,6 +24,7 @@
 // Assign different colors to 3D mesh parts
 //
 
+#include "geo.h"
 #include "colorgenerator.h"
 
 app::ColorGenerator::ColorGenerator()

@@ -32,6 +32,8 @@ cd Debug
 loftviewer.exe
 ```
 
+For additional sources syntax check, please run `clang-tidy.cmd`. 
+You need to have clang compiler and tools for this step.
 
 ## User interface
 
