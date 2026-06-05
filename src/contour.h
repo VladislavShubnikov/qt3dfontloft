@@ -69,7 +69,7 @@ public:
 
 	/**
 	* @brief Scale 2d contour vertices to the given scale
-	* @param scale size to fit
+	* @param side Size to fit
 	*/
 	void scaleTo(float side = 1.0F);
 

@@ -46,13 +46,18 @@ namespace geo
 class Mesh3d
 {
 public:
+    //! constructor
     Mesh3d() = default;
+    //! copy constructor
     Mesh3d(const Mesh3d&) = default;
+    //! move assignment
     Mesh3d& operator=(const Mesh3d&) = default;
-    // in future maybe should repeat gthe same move semantic as in move constructor
+    //! in future maybe should repeat gthe same move semantic as in move constructor
     Mesh3d& operator=(Mesh3d&&) = default; 
 
+    //! destructor
     ~Mesh3d();
+    //! constructor with move semantic
     Mesh3d(Mesh3d&& other) noexcept;
 
     /**

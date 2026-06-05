@@ -45,23 +45,39 @@ namespace geo
 class GlMesh3d: public QOpenGLFunctions
 {
 public:
+    //! constructor
     GlMesh3d() = default;
+    //! destructor
     ~GlMesh3d();
 
+    //! copy constructor
     GlMesh3d(const GlMesh3d&) = default;
+    //! move constructor
     GlMesh3d(GlMesh3d&&) = default;
+    //! copy assignment
     GlMesh3d& operator=(const GlMesh3d&) = default;
+    //! move assignment
     GlMesh3d& operator=(GlMesh3d&&) = default;
 
+    //! initialize openGL
     void initGL();
+    //! setup intenal buffers with 3d geometry data
     void setupGeometryData();
 
+    //! Paint GL function
     void paintGL(QOpenGLShaderProgram& program);
 
+    //! Assign new mesh
     void assign(const geo::Mesh3d& mesh);
+    //! Assignment operator
     GlMesh3d& operator=(const geo::Mesh3d& mesh);
+    //! construct with 3d mesh
     explicit GlMesh3d(const geo::Mesh3d& mesh);
 
+    /**
+     * @brief Get internal mesh
+     * @return mesh data
+     */
     Mesh3d& getMesh()
     { 
         return mesh_;

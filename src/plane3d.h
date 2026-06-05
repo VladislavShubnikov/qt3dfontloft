@@ -37,7 +37,9 @@ namespace geo
  */
 struct Plane3d
 {
+	//! plane base point
 	Point3f point_{ 0.0F, 0.0F, 0.0F };
+	//! normal vector to plane
 	Point3f normal_{ 0.0F, 1.0F, 0.0F };
 };
 

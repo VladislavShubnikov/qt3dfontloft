@@ -50,7 +50,7 @@ public:
 
 	/**
 	* @brief Save mesh set to OBJ format string
-	* @param mesh input meshes
+	* @param meshes input meshes
 	* @return string representation of OBJ file
 	*/
 	static [[nodiscard]] QString saveToObjString(const std::vector<geo::Mesh3d>& meshes);

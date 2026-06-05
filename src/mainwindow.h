@@ -50,7 +50,9 @@ class MainWindow: public QMainWindow
     Q_OBJECT
 
 public:
+    //! constructor with parent widget
     explicit MainWindow(QWidget *parent = 0);
+    //! destructor
     ~MainWindow() = default;
 
 private slots:

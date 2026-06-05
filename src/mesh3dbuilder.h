@@ -79,15 +79,15 @@ public:
 
     /**
     * @brief Build 3D mesh from 2D contour(s) points
-    * @note points of contours
-    * @param mesh out 3D mesh
+    * @param points of contours
+    * @param outMesh out 3D mesh
     */
     static void build3dMeshFromPoints(const ArrayContour2f& points, Mesh3d& outMesh);
 
     /**
     * @brief Build 3D mesh (loft) from 2D contour(s) points with given min and max value on 3rd dimension
-    * @note points of contours
-    * @param mesh out 3D mesh
+    * @param points of contours
+    * @param outMesh out 3D mesh
     * @param yMin minimum on y for loft
     * @param yMax maximum on y for loft
     */

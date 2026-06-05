@@ -42,11 +42,17 @@ namespace geo
 class MeshTriangleBuilder
 {
 public:
+	//! constructor
 	explicit MeshTriangleBuilder(geo::Mesh3d& mesh);
+	//! destructor
 	~MeshTriangleBuilder() = default;
+	//! copy constructor
 	MeshTriangleBuilder(const MeshTriangleBuilder&) = default;
+	//! move constructor
 	MeshTriangleBuilder(MeshTriangleBuilder&&) = default;
+	//! assignment operator
 	MeshTriangleBuilder& operator=(const MeshTriangleBuilder&) = default;
+	//! assignment operator with move semantic
 	MeshTriangleBuilder& operator=(MeshTriangleBuilder&&) = default;
 
 	/**

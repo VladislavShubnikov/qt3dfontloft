@@ -35,6 +35,9 @@ loftviewer.exe
 For additional sources syntax check, please run `clang-tidy.cmd`. 
 You need to have clang compiler and tools for this step.
 
+For auto documentation, please run `doxygen doxygen.conf`.
+You need to have doxygen tool installed on computer.
+                                                        
 ## User interface
 
 Application provides 7 english alphabet letters 2d contours:

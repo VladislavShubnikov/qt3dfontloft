@@ -12,6 +12,12 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 
+ /**
+ * @brief main entry to app
+ * @param argc number of arguments
+ * @param argv strings in arguments
+ * @return 0 if successfull
+ */
 int main(int argc, char *argv[])
 {
     QApplication app(argc, argv);

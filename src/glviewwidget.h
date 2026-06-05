@@ -53,13 +53,19 @@ class GlViewWidget: public QOpenGLWidget, protected QOpenGLFunctions
 {
 	Q_OBJECT
 public:
+	//! constructor
 	GlViewWidget(QWidget* parent = nullptr);
+	//! destructor
 	~GlViewWidget();
 
 	// NOLINTBEGIN
+	//! copy constructor
 	GlViewWidget(const GlViewWidget&) = delete;
+	//! copy assignment
 	GlViewWidget& operator=(const GlViewWidget&) = delete;
+	//! constructor with move semantic
 	GlViewWidget(GlViewWidget&&) = delete;
+	//! move assignment
 	GlViewWidget& operator=(GlViewWidget&&) = delete;
 	// NOLINTEND
 
@@ -87,13 +93,13 @@ public slots: // NOLINT(cppcoreguidelines-non-private-member-variables-in-classe
 
 	/**
 	* @brief Switch on/off clipping during 3D mesh render
-	* @param state, see @ref Qt::Checked
+	* @param state state of check box, see Qt::Checked
 	*/
 	void onClipped(int state);
 
 	/**
 	* @brief Switch on/off show artificial 3D axises
-	* @param state, see @ref Qt::Checked
+	* @param state State of the checkbox, see Qt::Checked
 	*/
 	void onAxis(int state);
 
@@ -115,11 +121,15 @@ protected:
 	*/
 	void paintGL() override;
 
-	// receive all mouse events
+	//! reaction on mouse button press event
 	void mousePressEvent(QMouseEvent* event) override;
+	//! reaction on mouse button release event
 	void mouseReleaseEvent(QMouseEvent* event) override;
+	//! reaction on mouse move event
 	void mouseMoveEvent(QMouseEvent* event) override;
+	//! reaction on mouse wheel event
 	void wheelEvent(QWheelEvent* event) override;
+	//! reaction on keybord key press event
 	void keyPressEvent(QKeyEvent* event) override;
 
 private:
