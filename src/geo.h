@@ -68,16 +68,16 @@ struct Point2f
     //! destructor
     ~Point2f() = default;
 
-    //! asignment operator
+    //! assignment operator
     Point2f& operator=(const Point2f&) = default;
     //! constructor with move
     Point2f(Point2f&& p) = default;
-    //! assigmwn with move semantic
+    //! assignment with move semantic
     Point2f& operator=(Point2f&&) = default;
 
     /**
      * @brief Get dot product
-     * @param p anotherpoint
+     * @param p another point
      * @return dot product with other vector
      */
     [[nodiscard]] float dotProduct(const Point2f& p) const;
@@ -175,9 +175,9 @@ using ArrayPoint3f = std::vector<geo::Point3f>;
 */
 struct Rect2f
 {
-    //! Minimum rectangle poiint coordinates
+    //! Minimum rectangle point coordinates
     Point2f pMin_;
-    //! Maximum rectangle poiint coordinates
+    //! Maximum rectangle point coordinates
     Point2f pMax_;
 
     /**

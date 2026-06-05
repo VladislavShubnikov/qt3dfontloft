@@ -52,7 +52,7 @@ public:
 	/**
 	* @brief Read 2d contours from 
 	* @param character character, used to build source json file name to read
-	* @return true if read was successfull
+	* @return true if read was successful
 	*/
 	bool readCharacterFromJson(const QString& character);
 

@@ -24,8 +24,6 @@
 // 3d mesh with OpenGL render functionality
 //
 
-#include <cstdlib>
-
 #include "geo.h"
 #include "mesh3d.h"
 
@@ -70,7 +68,7 @@ void geo::GlMesh3d::setupGeometryData()
     if (mesh_.vertices_.empty() || mesh_.indices_.empty())
     {
         // strange: should not enter here.
-        // geometry vertices and indices should be non empty
+        // geometry vertices and indices should be non-empty
         // assert(!mesh_.vertices_.empty());
         return;
     }
@@ -78,17 +76,17 @@ void geo::GlMesh3d::setupGeometryData()
     constexpr float k3{ 3 };
     constexpr float kBytesInFloat{ 4 };
     const std::size_t szPoint3f = sizeof(geo::Point3f);
-    assert(szPoint3f == k3 * sizeof(float));
+    static_assert(szPoint3f == static_cast<std::size_t>(k3) * sizeof(float));
 
     // allocate temp buffer for vertex + normal
     std::vector<float> vertNormals;
     const auto numVertices = static_cast<int>(mesh_.vertices_.size());
-    const int numFloatsInVeftNormals = numVertices * (k3 + k3);
-    vertNormals.resize(numFloatsInVeftNormals);
-    const int numBytesInVertNormals = numFloatsInVeftNormals * kBytesInFloat;
+    const int numFloatsInVertNormals = numVertices * static_cast<int>(k3 + k3);
+    vertNormals.resize(numFloatsInVertNormals);
+    const int numBytesInVertNormals = numFloatsInVertNormals * static_cast<int>(kBytesInFloat);
 
     // write interleaving vertex + normal
-    assert(numVertices == mesh_.normals_.size());
+    assert(numVertices == static_cast<int>(mesh_.normals_.size()));
     std::size_t j{ 0 };
     for (int i = 0; i < numVertices; i++)
     {
@@ -143,7 +141,7 @@ void geo::GlMesh3d::paintGL(QOpenGLShaderProgram& program) // NOLINT
     program.setAttributeBuffer(locNormal, GL_FLOAT, offset, tupleSize, stride);
 
     // Bind layout state and draw triangles based on indexed EBO data
-    const GLsizei numIndices = static_cast<GLsizei>(mesh_.indices_.size());
+    const auto numIndices = static_cast<GLsizei>(mesh_.indices_.size());
     glDrawElements(GL_TRIANGLES, numIndices, GL_UNSIGNED_INT, nullptr);
 
     program.disableAttributeArray(locNormal);

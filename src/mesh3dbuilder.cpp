@@ -23,9 +23,8 @@
 // mesh3dbuilder.cpp
 // Build Mesh3d by adding triangle one by one, and build indices
 //
-#include <cstdint>
-#include <cstdlib>
 #include <cmath>
+#include <cstdint>
 #include <numbers> // NOLINT(misc-include-cleaner)
 
 #include "geo.h"
@@ -45,8 +44,8 @@ void geo::Mesh3dBuilder::build3dMeshFromConcavePoints( // NOLINT(readability-con
 	float yMax)
 {
 	const auto numVertices = static_cast<int>(points.size());
-	outMesh.vertices_.resize(numVertices * 2);
-	outMesh.normals_.resize(numVertices * 2);
+	outMesh.vertices_.resize(static_cast<std::size_t>(numVertices) * 2);
+	outMesh.normals_.resize(static_cast<std::size_t>(numVertices) * 2);
 	for (int i = 0, j = 0; i < numVertices; i++)
 	{
 		outMesh.vertices_[j].x_ = yMin;
@@ -93,7 +92,7 @@ void geo::Mesh3dBuilder::build3dMeshFromPoints( // NOLINT(readability-convert-me
 	}
 
 	// calculate normals
-	// to do : reverse if need to keep counter clockwise direction of points
+	// to do : reverse normals (if needed) to keep counterclockwise direction of points
 	outMesh.normals_.resize(numVertices);
 	for (int i = 0; i < numVertices; i++)
 	{
@@ -106,7 +105,7 @@ void geo::Mesh3dBuilder::build3dMeshFromPoints( // NOLINT(readability-convert-me
 	}
 	// triangle indices
 	const int numTriangles{ numVertices - 2 };
-	outMesh.indices_.resize(numTriangles * kThree);
+	outMesh.indices_.resize(static_cast<std::size_t>(numTriangles * kThree));
 	int dst{ 0 };
 	for (int t = 0; t < numTriangles; t++)
 	{
@@ -200,7 +199,7 @@ void geo::Mesh3dBuilder::createAxis(const geo::Point3f& vLookTo, geo::Mesh3d& ou
 		1, 3, 2
 	};
 
-	// build mesh normals from verticew and triangle indices
+	// build mesh normals from vertices and triangle indices
 	outMesh.normals_.resize(4);
 	// NOLINTEND
 	calcVertexNormalsByTriNormals(outMesh);
@@ -209,8 +208,8 @@ void geo::Mesh3dBuilder::createAxis(const geo::Point3f& vLookTo, geo::Mesh3d& ou
 
 void geo::Mesh3dBuilder::createCylinder(float radius, float height, int numSides, geo::Mesh3d& outMesh) // NOLINT(bugprone-easily-swappable-parameters)
 {
-	outMesh.vertices_.resize(numSides * 2);
-	outMesh.normals_.resize(numSides * 2);
+	outMesh.vertices_.resize(static_cast<std::size_t>(numSides) * 2);
+	outMesh.normals_.resize(static_cast<std::size_t>(numSides) * 2);
 
 	const float h2 = height * 0.5F;
 	constexpr float kGradToRad{ std::numbers::pi_v<float> / 180.0F }; // NOLINT(cppcoreguidelines-init-variables)
@@ -286,7 +285,7 @@ void geo::Mesh3dBuilder::calcVertexNormalsByTriNormals(geo::Mesh3d& mesh)
 				numSharedTri++;
 			}
 		}
-		// It can be isolated vertex with no one triangle, refered to it.
+		// It can be isolated vertex with no one triangle, with reference to it.
 		// After some clipping, new triangle can be invalid (have two vertices in
 		// the same position)
 		// 

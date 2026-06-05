@@ -33,7 +33,7 @@ namespace app
 
 /**
  * @class ColorGenerator
- * @brief Simple color generator for produced 3D meshed suring build or clipping
+ * @brief Simple color generator for produced 3D meshed during build or clipping
  */
 class ColorGenerator
 {

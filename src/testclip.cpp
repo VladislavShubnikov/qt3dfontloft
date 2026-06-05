@@ -21,11 +21,13 @@
 // THE SOFTWARE.
 //
 // testclip.cpp
-// Tests for mesh clippping functions
+// Tests for mesh clipping functions
 //
 
 #include <cstdlib>
 #include <utility>
+
+#include <QDebug>
 
 #include "geo.h"
 #include "contourtools.h"
@@ -39,90 +41,7 @@
 namespace
 {
 
-void testMeshPolyConvex()
-{
-    const std::vector<geo::Point2f> points3{
-        {0.0F, 0.0F}, {1.0F, 0.0F}, {1.0F, 1.0F}
-    };
-    bool isConvex = geo::ContourTools::pointsConvex(points3);
-    assert(isConvex);
 
-    const std::vector<geo::Point2f> pointsRect4{
-        {0.0F, 0.0F}, {1.0F, 0.0F}, {1.0F, 1.0F}, {0.0F, 1.0F}
-    };
-    isConvex = geo::ContourTools::pointsConvex(pointsRect4);
-    assert(isConvex);
-
-    const std::vector<geo::Point2f> pointsDegenThree4{
-        {0.0F, 0.0F}, {1.0F, 0.0F}, {2.0F, 0.0F},  { 1.0F, 1.0F }
-    };
-    isConvex = geo::ContourTools::pointsConvex(pointsDegenThree4);
-    assert(isConvex);
-
-    const std::vector<geo::Point2f> pointsDegenLastThree4{
-        {0.0F, 0.0F}, { 1.0F, 1.0F } , {2.0F, 0.0F}, {1.0F, 0.0F},
-    };
-    isConvex = geo::ContourTools::pointsConvex(pointsDegenLastThree4);
-    assert(isConvex);
-
-    const std::vector<geo::Point2f> pointsDegenMidThree4{
-        {1.0F, 0.0F} , {0.0F, 0.0F}, { 1.0F, 1.0F } , {2.0F, 0.0F},
-    };
-    isConvex = geo::ContourTools::pointsConvex(pointsDegenMidThree4);
-    assert(isConvex);
-
-    const std::vector<geo::Point2f> pointsSameVertex4{
-        {0.0F, 0.0F}, {1.0F, 0.0F}, {1.0F, 0.0F},  { 1.0F, 1.0F }
-    };
-    isConvex = geo::ContourTools::pointsConvex(pointsSameVertex4);
-    assert(isConvex);
-
-    const std::vector<geo::Point2f> pointsConcavePiramide{
-        {0.0F, 0.0F}, {1.0F, 1.0F}, {2.0F, 0.0F},  { 1.0F, 3.0F }
-    };
-    isConvex = geo::ContourTools::pointsConvex(pointsConcavePiramide);
-    assert(!isConvex);
-
-    // same, but in revese order
-    const std::vector<geo::Point2f> pointsConcavePiramideRev{
-        {0.0F, 0.0F}, { 1.0F, 3.0F } , {2.0F, 0.0F}, {1.0F, 1.0F}
-    };
-    isConvex = geo::ContourTools::pointsConvex(pointsConcavePiramideRev);
-    assert(!isConvex);
-}
-
-void testMeshMakeCCW()
-{
-    std::vector<geo::Point2f> pointsCW{
-        {0.0F, 0.0F}, {0.0F, 1.0F}, {1.0F, 1.0F}, {1.0F, 0.0F},
-    };
-    geo::ContourTools::makePointsCounterClockwise(pointsCW);
-    assert((pointsCW[0] - geo::Point2f(1.0F, 0.0F)).squaredNorm() < 1.0e-6F);
-
-    std::vector<geo::Point2f> pointsCorrectCCW{
-        {0.0F, 0.0F}, {0.0F, 1.0F}, {1.0F, 1.0F}, {1.0F, 0.0F},
-    };
-    geo::ContourTools::makePointsCounterClockwise(pointsCW);
-    assert((pointsCorrectCCW[0] - geo::Point2f(0.0F, 0.0F)).squaredNorm() < 1.0e-6F);
-
-    std::vector<geo::Point2f> points4a{
-        {0.0F, 0.0F}, {1.0F, 1.0F}, {2.0F, 0.0F}, {1.0F, 0.0F},
-    };
-    geo::ContourTools::makePointsCounterClockwise(points4a);
-    assert((points4a[0] - geo::Point2f(1.0F, 0.0F)).squaredNorm() < 1.0e-6F);
-
-    std::vector<geo::Point2f> points4b{
-        {1.0F, 1.0F}, {2.0F, 0.0F}, {1.0F, 0.0F}, {0.0F, 0.0F}
-    };
-    geo::ContourTools::makePointsCounterClockwise(points4b);
-    assert((points4b[0] - geo::Point2f(0.0F, 0.0F)).squaredNorm() < 1.0e-6F);
-
-    std::vector<geo::Point2f> points4c{
-        {2.0F, 0.0F}, {1.0F, 0.0F}, {0.0F, 0.0F}, {1.0F, 1.0F}
-    };
-    geo::ContourTools::makePointsCounterClockwise(points4c);
-    assert((points4c[0] - geo::Point2f(1.0F, 1.0F)).squaredNorm() < 1.0e-6F);
-}
 
 bool vecSame(const geo::ArrayContour2f& vecA, const geo::ArrayContour2f& vecB)
 {
@@ -149,7 +68,101 @@ bool valueSame(float a, float b)
     return dif < 1.0e-8F;
 }
 
-void testSplitConcave()
+} // namespace
+
+void geo::TestGeo::initTestCase()
+{
+}
+void geo::TestGeo::cleanupTestCase()
+{
+}
+
+void geo::TestGeo::testMeshPolyConvex()
+{
+    const std::vector<geo::Point2f> points3{
+        {0.0F, 0.0F}, {1.0F, 0.0F}, {1.0F, 1.0F}
+    };
+    bool isConvex = geo::ContourTools::pointsConvex(points3);
+    QVERIFY(isConvex);
+
+    const std::vector<geo::Point2f> pointsRect4{
+        {0.0F, 0.0F}, {1.0F, 0.0F}, {1.0F, 1.0F}, {0.0F, 1.0F}
+    };
+    isConvex = geo::ContourTools::pointsConvex(pointsRect4);
+    QVERIFY(isConvex);
+
+    const std::vector<geo::Point2f> pointsDegenThree4{
+        {0.0F, 0.0F}, {1.0F, 0.0F}, {2.0F, 0.0F},  { 1.0F, 1.0F }
+    };
+    isConvex = geo::ContourTools::pointsConvex(pointsDegenThree4);
+    QVERIFY(isConvex);
+
+    const std::vector<geo::Point2f> pointsDegenLastThree4{
+        {0.0F, 0.0F}, { 1.0F, 1.0F } , {2.0F, 0.0F}, {1.0F, 0.0F},
+    };
+    isConvex = geo::ContourTools::pointsConvex(pointsDegenLastThree4);
+    QVERIFY(isConvex);
+
+    const std::vector<geo::Point2f> pointsDegenMidThree4{
+        {1.0F, 0.0F} , {0.0F, 0.0F}, { 1.0F, 1.0F } , {2.0F, 0.0F},
+    };
+    isConvex = geo::ContourTools::pointsConvex(pointsDegenMidThree4);
+    QVERIFY(isConvex);
+
+    const std::vector<geo::Point2f> pointsSameVertex4{
+        {0.0F, 0.0F}, {1.0F, 0.0F}, {1.0F, 0.0F},  { 1.0F, 1.0F }
+    };
+    isConvex = geo::ContourTools::pointsConvex(pointsSameVertex4);
+    QVERIFY(isConvex);
+
+    const std::vector<geo::Point2f> pointsConcavePyramid{
+        {0.0F, 0.0F}, {1.0F, 1.0F}, {2.0F, 0.0F},  { 1.0F, 3.0F }
+    };
+    isConvex = geo::ContourTools::pointsConvex(pointsConcavePyramid);
+    QVERIFY(!isConvex);
+
+    // same, but in reverse order
+    const std::vector<geo::Point2f> pointsConcavePyramidRev{
+        {0.0F, 0.0F}, { 1.0F, 3.0F } , {2.0F, 0.0F}, {1.0F, 1.0F}
+    };
+    isConvex = geo::ContourTools::pointsConvex(pointsConcavePyramidRev);
+    QVERIFY(!isConvex);
+}
+
+void geo::TestGeo::testMeshMakeCCW()
+{
+    std::vector<geo::Point2f> pointsCW{
+        {0.0F, 0.0F}, {0.0F, 1.0F}, {1.0F, 1.0F}, {1.0F, 0.0F},
+    };
+    geo::ContourTools::makePointsCounterClockwise(pointsCW);
+    QVERIFY((pointsCW[0] - geo::Point2f(1.0F, 0.0F)).squaredNorm() < 1.0e-6F);
+
+    std::vector<geo::Point2f> pointsCorrectCCW{
+        {0.0F, 0.0F}, {0.0F, 1.0F}, {1.0F, 1.0F}, {1.0F, 0.0F},
+    };
+    geo::ContourTools::makePointsCounterClockwise(pointsCW);
+    QVERIFY((pointsCorrectCCW[0] - geo::Point2f(0.0F, 0.0F)).squaredNorm() < 1.0e-6F);
+
+    std::vector<geo::Point2f> points4a{
+        {0.0F, 0.0F}, {1.0F, 1.0F}, {2.0F, 0.0F}, {1.0F, 0.0F},
+    };
+    geo::ContourTools::makePointsCounterClockwise(points4a);
+    QVERIFY((points4a[0] - geo::Point2f(1.0F, 0.0F)).squaredNorm() < 1.0e-6F);
+
+    std::vector<geo::Point2f> points4b{
+        {1.0F, 1.0F}, {2.0F, 0.0F}, {1.0F, 0.0F}, {0.0F, 0.0F}
+    };
+    geo::ContourTools::makePointsCounterClockwise(points4b);
+    QVERIFY((points4b[0] - geo::Point2f(0.0F, 0.0F)).squaredNorm() < 1.0e-6F);
+
+    std::vector<geo::Point2f> points4c{
+        {2.0F, 0.0F}, {1.0F, 0.0F}, {0.0F, 0.0F}, {1.0F, 1.0F}
+    };
+    geo::ContourTools::makePointsCounterClockwise(points4c);
+    QVERIFY((points4c[0] - geo::Point2f(1.0F, 1.0F)).squaredNorm() < 1.0e-6F);
+}
+
+void geo::TestGeo::testSplitConcave()
 {
     // all source contours are CCW
     std::vector<geo::Point2f> pointsPerfect{
@@ -157,34 +170,34 @@ void testSplitConcave()
     };
     geo::ArrayContours2f contArr = geo::ContourTools::splitConcaveContour(pointsPerfect);
     // result is 1 same contour
-    assert(contArr.size() == 1);
+    QVERIFY(contArr.size() == 1);
     geo::ArrayContour2f vec = contArr[0];
-    assert(vecSame(vec, pointsPerfect));
+    QVERIFY(vecSame(vec, pointsPerfect));
 
-    // concave piramide
-    std::vector<geo::Point2f> pointsPira{
+    // concave pyramid
+    std::vector<geo::Point2f> pointsPyramid{
         {0.0F, 0.0F}, {1.0F, 1.0F}, {2.0F, 0.0F}, {1.0F, 3.0F}
     };
-    contArr = geo::ContourTools::splitConcaveContour(pointsPira);
-    assert(contArr.size() == 2);
-    assert(contArr[0].size() == 3);
-    assert(contArr[1].size() == 3);
+    contArr = geo::ContourTools::splitConcaveContour(pointsPyramid);
+    QVERIFY(contArr.size() == 2);
+    QVERIFY(contArr[0].size() == 3);
+    QVERIFY(contArr[1].size() == 3);
 
     geo::Rect2f box0 = getPointsBoundingRect(contArr[0]);
     geo::Rect2f box1 = getPointsBoundingRect(contArr[1]);
-    assert(valueSame(box0.width(), 1.0F));
-    assert(valueSame(box1.width(), 1.0F));
-    assert(valueSame(box0.height(), 3.0F));
-    assert(valueSame(box1.height(), 3.0F));
+    QVERIFY(valueSame(box0.width(), 1.0F));
+    QVERIFY(valueSame(box1.width(), 1.0F));
+    QVERIFY(valueSame(box0.height(), 3.0F));
+    QVERIFY(valueSame(box1.height(), 3.0F));
 
-    assert(valueSame(box1.pMax_.x_, 2.0F));
-    assert(valueSame(box0.pMin_.x_, 0.0F));
-    assert(valueSame(box1.pMin_.x_, box0.pMax_.x_));
+    QVERIFY(valueSame(box1.pMax_.x_, 2.0F));
+    QVERIFY(valueSame(box0.pMin_.x_, 0.0F));
+    QVERIFY(valueSame(box1.pMin_.x_, box0.pMax_.x_));
 
-    assert(valueSame(box0.pMin_.y_, 0.0F));
-    assert(valueSame(box1.pMin_.y_, 0.0F));
-    assert(valueSame(box0.pMax_.y_, 3.0F));
-    assert(valueSame(box1.pMax_.y_, 3.0F));
+    QVERIFY(valueSame(box0.pMin_.y_, 0.0F));
+    QVERIFY(valueSame(box1.pMin_.y_, 0.0F));
+    QVERIFY(valueSame(box0.pMax_.y_, 3.0F));
+    QVERIFY(valueSame(box1.pMax_.y_, 3.0F));
 
     // concave :
     //
@@ -202,31 +215,31 @@ void testSplitConcave()
         {3.0F, 3.0F}, {1.0F, 4.0F}
     };
     contArr = geo::ContourTools::splitConcaveContour(pointsSuite);
-    assert(contArr.size() == 3);
-    assert(contArr[0].size() == 3);
-    assert(contArr[1].size() == 3);
-    assert(contArr[2].size() == 4);
+    QVERIFY(contArr.size() == 3);
+    QVERIFY(contArr[0].size() == 3);
+    QVERIFY(contArr[1].size() == 3);
+    QVERIFY(contArr[2].size() == 4);
     box0 = getPointsBoundingRect(contArr[0]);
     box1 = getPointsBoundingRect(contArr[1]);
     geo::Rect2f box2 = getPointsBoundingRect(contArr[2]);
 
-    assert(valueSame(box0.pMin_.x_, 1.0F));
-    assert(valueSame(box0.pMax_.x_, 3.0F));
-    assert(valueSame(box0.pMin_.y_, 1.0F));
-    assert(valueSame(box0.pMax_.y_, 4.0F));
+    QVERIFY(valueSame(box0.pMin_.x_, 1.0F));
+    QVERIFY(valueSame(box0.pMax_.x_, 3.0F));
+    QVERIFY(valueSame(box0.pMin_.y_, 1.0F));
+    QVERIFY(valueSame(box0.pMax_.y_, 4.0F));
 
-    assert(valueSame(box1.pMin_.x_, 1.0F));
-    assert(valueSame(box1.pMax_.x_, 3.0F));
-    assert(valueSame(box1.pMin_.y_, 1.0F));
-    assert(valueSame(box1.pMax_.y_, 3.0F));
+    QVERIFY(valueSame(box1.pMin_.x_, 1.0F));
+    QVERIFY(valueSame(box1.pMax_.x_, 3.0F));
+    QVERIFY(valueSame(box1.pMin_.y_, 1.0F));
+    QVERIFY(valueSame(box1.pMax_.y_, 3.0F));
 
-    assert(valueSame(box2.pMin_.x_, 3.0F));
-    assert(valueSame(box2.pMax_.x_, 5.0F));
-    assert(valueSame(box2.pMin_.y_, 1.0F));
-    assert(valueSame(box2.pMax_.y_, 4.0F));
+    QVERIFY(valueSame(box2.pMin_.x_, 3.0F));
+    QVERIFY(valueSame(box2.pMax_.x_, 5.0F));
+    QVERIFY(valueSame(box2.pMin_.y_, 1.0F));
+    QVERIFY(valueSame(box2.pMax_.y_, 4.0F));
 
     // concave :
-    //
+    /*
     //     *
     //    /  \
     //   / *   \
@@ -235,34 +248,34 @@ void testSplitConcave()
     //       * /
     //       |/
     //       *
-    //
+    */
     std::vector<geo::Point2f> pointsHorseHeel{
         {1.0F, 3.0F}, {3.0F, 4.0F}, {4.0F, 3.0F}, {3.0F, 1.0F},
         {6.0F, 3.0F}, {2.0F, 6.0F}
     };
     contArr = geo::ContourTools::splitConcaveContour(pointsHorseHeel);
-    assert(contArr.size() == 3);
-    assert(contArr[0].size() == 4);
-    assert(contArr[1].size() == 3);
-    assert(contArr[2].size() == 3);
+    QVERIFY(contArr.size() == 3);
+    QVERIFY(contArr[0].size() == 4);
+    QVERIFY(contArr[1].size() == 3);
+    QVERIFY(contArr[2].size() == 3);
     box0 = getPointsBoundingRect(contArr[0]);
     box1 = getPointsBoundingRect(contArr[1]);
     box2 = getPointsBoundingRect(contArr[2]);
 
-    assert(valueSame(box0.pMin_.x_, 2.0F));
-    assert(valueSame(box0.pMax_.x_, 6.0F));
-    assert(valueSame(box0.pMin_.y_, 3.0F));
-    assert(valueSame(box0.pMax_.y_, 6.0F));
+    QVERIFY(valueSame(box0.pMin_.x_, 2.0F));
+    QVERIFY(valueSame(box0.pMax_.x_, 6.0F));
+    QVERIFY(valueSame(box0.pMin_.y_, 3.0F));
+    QVERIFY(valueSame(box0.pMax_.y_, 6.0F));
 
-    assert(valueSame(box1.pMin_.x_, 1.0F));
-    assert(valueSame(box1.pMax_.x_, 3.0F));
-    assert(valueSame(box1.pMin_.y_, 3.0F));
-    assert(valueSame(box1.pMax_.y_, 6.0F));
+    QVERIFY(valueSame(box1.pMin_.x_, 1.0F));
+    QVERIFY(valueSame(box1.pMax_.x_, 3.0F));
+    QVERIFY(valueSame(box1.pMin_.y_, 3.0F));
+    QVERIFY(valueSame(box1.pMax_.y_, 6.0F));
 
-    assert(valueSame(box2.pMin_.x_, 3.0F));
-    assert(valueSame(box2.pMax_.x_, 6.0F));
-    assert(valueSame(box2.pMin_.y_, 1.0F));
-    assert(valueSame(box2.pMax_.y_, 3.0F));
+    QVERIFY(valueSame(box2.pMin_.x_, 3.0F));
+    QVERIFY(valueSame(box2.pMax_.x_, 6.0F));
+    QVERIFY(valueSame(box2.pMin_.y_, 1.0F));
+    QVERIFY(valueSame(box2.pMax_.y_, 3.0F));
 
     // concave :
     //
@@ -278,76 +291,76 @@ void testSplitConcave()
         {2.0F, 1.0F}, {1.0F, 2.0F}, {0.0F, 2.0F}
     };
     contArr = geo::ContourTools::splitConcaveContour(pointsRectTri);
-    assert(contArr.size() == 4);
-    assert(contArr[0].size() == 4);
-    assert(contArr[1].size() == 3);
-    assert(contArr[2].size() == 3);
-    assert(contArr[3].size() == 3);
+    QVERIFY(contArr.size() == 4);
+    QVERIFY(contArr[0].size() == 4);
+    QVERIFY(contArr[1].size() == 3);
+    QVERIFY(contArr[2].size() == 3);
+    QVERIFY(contArr[3].size() == 3);
     box0 = getPointsBoundingRect(contArr[0]);
     box1 = getPointsBoundingRect(contArr[1]);
     box2 = getPointsBoundingRect(contArr[2]);
     geo::Rect2f box3 = getPointsBoundingRect(contArr[3]);
 
-    assert(valueSame(box0.pMin_.x_, 0.0F));
-    assert(valueSame(box0.pMax_.x_, 2.0F));
-    assert(valueSame(box0.pMin_.y_, 0.0F));
-    assert(valueSame(box0.pMax_.y_, 2.0F));
+    QVERIFY(valueSame(box0.pMin_.x_, 0.0F));
+    QVERIFY(valueSame(box0.pMax_.x_, 2.0F));
+    QVERIFY(valueSame(box0.pMin_.y_, 0.0F));
+    QVERIFY(valueSame(box0.pMax_.y_, 2.0F));
 
-    assert(valueSame(box1.pMin_.x_, 2.0F));
-    assert(valueSame(box1.pMax_.x_, 4.0F));
-    assert(valueSame(box1.pMin_.y_, 0.0F));
-    assert(valueSame(box1.pMax_.y_, 2.0F));
+    QVERIFY(valueSame(box1.pMin_.x_, 2.0F));
+    QVERIFY(valueSame(box1.pMax_.x_, 4.0F));
+    QVERIFY(valueSame(box1.pMin_.y_, 0.0F));
+    QVERIFY(valueSame(box1.pMax_.y_, 2.0F));
 
-    assert(valueSame(box2.pMin_.x_, 0.0F));
-    assert(valueSame(box2.pMax_.x_, 4.0F));
-    assert(valueSame(box2.pMin_.y_, 0.0F));
-    assert(valueSame(box2.pMax_.y_, 1.0F));
+    QVERIFY(valueSame(box2.pMin_.x_, 0.0F));
+    QVERIFY(valueSame(box2.pMax_.x_, 4.0F));
+    QVERIFY(valueSame(box2.pMin_.y_, 0.0F));
+    QVERIFY(valueSame(box2.pMax_.y_, 1.0F));
 
-    assert(valueSame(box3.pMin_.x_, 3.0F));
-    assert(valueSame(box3.pMax_.x_, 4.0F));
-    assert(valueSame(box3.pMin_.y_, 0.0F));
-    assert(valueSame(box3.pMax_.y_, 2.0F));
+    QVERIFY(valueSame(box3.pMin_.x_, 3.0F));
+    QVERIFY(valueSame(box3.pMax_.x_, 4.0F));
+    QVERIFY(valueSame(box3.pMin_.y_, 0.0F));
+    QVERIFY(valueSame(box3.pMax_.y_, 2.0F));
 
-    // concave
-    // 
+    /* concave
+    //
     //   *    *
     //  /  \ / \
     // *    *   *
     //   \     /
     //     \ /
     //      *
-    std::vector<geo::Point2f> pointsParalelloConcave{
+    */
+    std::vector<geo::Point2f> pointsParalellConcave{
         {0.0F, 1.0F}, {3.0F, 0.0F}, {6.0F, 1.0F}, {5.0F, 2.0F},
         {3.0F, 1.0F}, {1.0F, 2.0F}
     };
-    contArr = geo::ContourTools::splitConcaveContour(pointsParalelloConcave);
-    assert(contArr.size() == 2);
-    assert(contArr[0].size() == 4);
-    assert(contArr[1].size() == 4);
+    contArr = geo::ContourTools::splitConcaveContour(pointsParalellConcave);
+    QVERIFY(contArr.size() == 2);
+    QVERIFY(contArr[0].size() == 4);
+    QVERIFY(contArr[1].size() == 4);
 
     box0 = getPointsBoundingRect(contArr[0]);
     box1 = getPointsBoundingRect(contArr[1]);
 
-    assert(valueSame(box0.pMin_.x_, 0.0F));
-    assert(valueSame(box0.pMax_.x_, 3.0F));
-    assert(valueSame(box0.pMin_.y_, 0.0F));
-    assert(valueSame(box0.pMax_.y_, 2.0F));
+    QVERIFY(valueSame(box0.pMin_.x_, 0.0F));
+    QVERIFY(valueSame(box0.pMax_.x_, 3.0F));
+    QVERIFY(valueSame(box0.pMin_.y_, 0.0F));
+    QVERIFY(valueSame(box0.pMax_.y_, 2.0F));
 
-    assert(valueSame(box1.pMin_.x_, 3.0F));
-    assert(valueSame(box1.pMax_.x_, 6.0F));
-    assert(valueSame(box1.pMin_.y_, 0.0F));
-    assert(valueSame(box1.pMax_.y_, 2.0F));
-
+    QVERIFY(valueSame(box1.pMin_.x_, 3.0F));
+    QVERIFY(valueSame(box1.pMax_.x_, 6.0F));
+    QVERIFY(valueSame(box1.pMin_.y_, 0.0F));
+    QVERIFY(valueSame(box1.pMax_.y_, 2.0F));
 }
 
-void testMeshClipCheck()
+void geo::TestGeo::testMeshClipCheck()
 {
     geo::Mesh3d mesh;
     // add vertices
-    mesh.vertices_.push_back({ 0.0F, 0.0F, 0.0F });
-    mesh.vertices_.push_back({ 0.0F, 0.0F, 1.0F });
-    mesh.vertices_.push_back({ 0.0F, 1.0F, 0.0F });
-    mesh.vertices_.push_back({ 0.0F, 1.0F, 1.0F });
+    mesh.vertices_.emplace_back(0.0F, 0.0F, 0.0F);
+    mesh.vertices_.emplace_back(0.0F, 0.0F, 1.0F);
+    mesh.vertices_.emplace_back(0.0F, 1.0F, 0.0F);
+    mesh.vertices_.emplace_back(0.0F, 1.0F, 1.0F);
     mesh.indices_ = { 1, 0, 2, 2, 3, 1 };
 
     geo::Plane3d plane;
@@ -355,22 +368,23 @@ void testMeshClipCheck()
     plane.point_ = { 0.0F, -100.0F, 0.0F };
 
     bool clipped = geo::Mesh3dClip::canBeClipped(mesh, plane);
-    assert(!clipped);
+    QVERIFY(!clipped);
 
     constexpr float kSmall{ 1.0e-5F };
     plane.point_ = { 0.0F, 1.0F + kSmall, 0.0F };
     clipped = geo::Mesh3dClip::canBeClipped(mesh, plane);
-    assert(!clipped);
+    QVERIFY(!clipped);
 
     plane.point_ = { 0.0F, 0.0F + kSmall, 0.0F };
     clipped = geo::Mesh3dClip::canBeClipped(mesh, plane);
-    assert(clipped);
+    QVERIFY(clipped);
 
     plane.point_ = { 0.0F, 1.0F - kSmall, 0.0F };
     clipped = geo::Mesh3dClip::canBeClipped(mesh, plane);
-    assert(clipped);
+    QVERIFY(clipped);
 }
-void testMeshClipA()
+
+void geo::TestGeo::testMeshClipA()
 {
     geo::Mesh3d mesh; // NOLINT
     // add vertices
@@ -388,13 +402,13 @@ void testMeshClipA()
     const geo::Mesh3d& meshPos = pairMeshes.first;
     const geo::Mesh3d& meshNeg = pairMeshes.second;
 
-    assert(meshPos.vertices_.size() == 5);
-    assert(meshNeg.vertices_.size() == 5);
-    assert(meshPos.indices_.size() == 9);
-    assert(meshNeg.indices_.size() == 9);
+    QVERIFY(meshPos.vertices_.size() == 5);
+    QVERIFY(meshNeg.vertices_.size() == 5);
+    QVERIFY(meshPos.indices_.size() == 9);
+    QVERIFY(meshNeg.indices_.size() == 9);
 }
 
-void testMeshClipB()
+void geo::TestGeo::testMeshClipB()
 {
     geo::Mesh3d mesh; // NOLINT
     // add vertices
@@ -414,11 +428,11 @@ void testMeshClipB()
     const geo::Mesh3d& meshPos = pairMeshes.first;
     const geo::Mesh3d& meshNeg = pairMeshes.second;
 
-    assert(meshPos.vertices_.size() == 4);
-    assert(meshNeg.vertices_.size() == 6);
+    QVERIFY(meshPos.vertices_.size() == 4);
+    QVERIFY(meshNeg.vertices_.size() == 6);
 }
 
-void testLineClip()
+void geo::TestGeo::testLineClip()
 {
     geo::Plane3d plane;
     plane.normal_ = { 0.0F, 1.0F, 0.0F };
@@ -431,40 +445,40 @@ void testLineClip()
     bool aPos{ false };
     bool bPos{ false };
     bool hasClip = geo::Mesh3dClip::lineClipped(va, vb, plane, vClip, aPos, bPos);
-    assert(hasClip);
-    assert((vClip - geo::Point3f(0.0F, 0.5F, 0.0F)).squaredNorm() < kSmall);
-    assert(!aPos);
-    assert(bPos);
+    QVERIFY(hasClip);
+    QVERIFY((vClip - geo::Point3f(0.0F, 0.5F, 0.0F)).squaredNorm() < kSmall);
+    QVERIFY(!aPos);
+    QVERIFY(bPos);
 
     va = { 0.0F, 0.0F, 0.0F };
     vb = { 0.0F, 0.1F, 0.0F };
     hasClip = geo::Mesh3dClip::lineClipped(va, vb, plane, vClip, aPos, bPos);
-    assert(!hasClip);
-    assert(!aPos);
-    assert(!bPos);
+    QVERIFY(!hasClip);
+    QVERIFY(!aPos);
+    QVERIFY(!bPos);
 
     va = { 0.0F, 1.0F, 0.0F };
     vb = { 0.0F, 1.1F, 0.0F };
     hasClip = geo::Mesh3dClip::lineClipped(va, vb, plane, vClip, aPos, bPos);
-    assert(!hasClip);
-    assert(aPos);
-    assert(bPos);
+    QVERIFY(!hasClip);
+    QVERIFY(aPos);
+    QVERIFY(bPos);
 
     va = { 0.0F, 0.0F, 0.0F };
     vb = { 1.0F, 1.0F, 1.0F };
     hasClip = geo::Mesh3dClip::lineClipped(va, vb, plane, vClip, aPos, bPos);
-    assert(hasClip);
-    assert((vClip - geo::Point3f(0.5F, 0.5F, 0.5F)).squaredNorm() < kSmall);
+    QVERIFY(hasClip);
+    QVERIFY((vClip - geo::Point3f(0.5F, 0.5F, 0.5F)).squaredNorm() < kSmall);
 
     constexpr float kEps{ 1.0e-4F };
     va = { 0.0F, 0.5F - kEps, 0.0F };
     vb = { 0.0F, 0.5F + kEps, 0.0F };
     hasClip = geo::Mesh3dClip::lineClipped(va, vb, plane, vClip, aPos, bPos);
-    assert(hasClip);
-    assert((vClip - geo::Point3f(0.0F, 0.5F, 0.0F)).squaredNorm() < kSmall);
+    QVERIFY(hasClip);
+    QVERIFY((vClip - geo::Point3f(0.0F, 0.5F, 0.0F)).squaredNorm() < kSmall);
 }
 
-void testTriangleClip()
+void geo::TestGeo::testTriangleClip()
 {
     geo::ArrayPoint3f triangleSrc{
         {0.0F, 0.0F, 1.0F},
@@ -480,11 +494,11 @@ void testTriangleClip()
         geo::Mesh3dClip::clipTriangle(triangleSrc, plane);
     const geo::ArrayPoint3f& triPos = pairRes.first;
     const geo::ArrayPoint3f& triNeg = pairRes.second;
-    assert(triPos.size() == 3);
-    assert(triNeg.size() == 4);
+    QVERIFY(triPos.size() == 3);
+    QVERIFY(triNeg.size() == 4);
 }
 
-void testMeshFix()
+void geo::TestGeo::testMeshFix()
 {
     geo::Mesh3d mesh;
     mesh.vertices_ = {
@@ -494,12 +508,12 @@ void testMeshFix()
         {3.0F, 0.0F, 0.0F},
         {4.0F, 0.0F, 0.0F},
     };
-    mesh.indices_ = {0, 2, 4};
+    mesh.indices_ = { 0, 2, 4 };
     geo::MeshTools::fixUnreferencedVertices(mesh);
-    assert(mesh.vertices_.size() == 3);
-    assert(mesh.indices_[0] == 0);
-    assert(mesh.indices_[1] == 1);
-    assert(mesh.indices_[2] == 2);
+    QVERIFY(mesh.vertices_.size() == 3);
+    QVERIFY(mesh.indices_[0] == 0);
+    QVERIFY(mesh.indices_[1] == 1);
+    QVERIFY(mesh.indices_[2] == 2);
 
     mesh.vertices_ = {
         {0.0F, 0.0F, 0.0F},
@@ -510,28 +524,12 @@ void testMeshFix()
     };
     mesh.indices_ = { 1, 2, 3, 2, 3, 4 };
     geo::MeshTools::fixUnreferencedVertices(mesh);
-    assert(mesh.vertices_.size() == 4);
-    assert(mesh.indices_.size() == 6);
-    assert(mesh.indices_[0] == 0);
-    assert(mesh.indices_[1] == 1);
-    assert(mesh.indices_[2] == 2);
-    assert(mesh.indices_[3] == 1);
-    assert(mesh.indices_[4] == 2);
-    assert(mesh.indices_[5] == 3);
-
-}
-
-} // namespace
-
-void geo::testRun()
-{
-    testMeshPolyConvex();
-    testMeshMakeCCW();
-    testSplitConcave();
-    testMeshClipCheck();
-    testMeshClipA();
-    testMeshClipB();
-    testLineClip();
-    testTriangleClip();
-    testMeshFix();
+    QVERIFY(mesh.vertices_.size() == 4);
+    QVERIFY(mesh.indices_.size() == 6);
+    QVERIFY(mesh.indices_[0] == 0);
+    QVERIFY(mesh.indices_[1] == 1);
+    QVERIFY(mesh.indices_[2] == 2);
+    QVERIFY(mesh.indices_[3] == 1);
+    QVERIFY(mesh.indices_[4] == 2);
+    QVERIFY(mesh.indices_[5] == 3);
 }

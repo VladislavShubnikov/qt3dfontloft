@@ -113,10 +113,20 @@ bool geo::Contour::readCharacterFromJson(const QString& character)
 {
     QString dir = QCoreApplication::applicationDirPath();
     QString pathToJson = dir + R"(/../../data/char_)" + character + ".json";
+    if (!QFile::exists(pathToJson))
+    {
+        pathToJson = dir + R"(/../data/char_)" + character + ".json";
+        if (!QFile::exists(pathToJson))
+        {
+            qDebug()  << "Cant find file: " << pathToJson << "\n";
+            return false;
+        }
+    }
 
     QFile file(pathToJson);
     if (!file.open(QIODevice::ReadOnly | QIODevice::Text))
     {
+        qDebug()  << "Cant open file: " << pathToJson << "\n";
         return false;
     }
     QTextStream inp(&file);

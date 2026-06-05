@@ -21,7 +21,7 @@
 // THE SOFTWARE.
 //
 // contourtools.cpp
-// Geometry opertations with 2d contour(s)
+// Geometry operations with 2d contour(s)
 //
 #ifndef CONTOURTOOLS_H
 #define CONTOURTOOLS_H
@@ -33,7 +33,7 @@ namespace geo
 
     /**
      * @class ContourTools
-     * @brief Split concave contour into set of conve ones
+     * @brief Split concave contour into set of convex ones
      */
     class ContourTools
 {
@@ -45,13 +45,13 @@ public:
     * Please see @ref splitConcaveContour for more details
     * @param points source points of concave contour
     */
-    static [[nodiscard]] ArrayContours2f splitToConvexContours(const geo::ArrayContour2f& points);
+    static ArrayContours2f splitToConvexContours(const geo::ArrayContour2f& points);
 
     /**
     * @brief Check is contour points convex
     * @param points source points of contour
     */
-    static [[nodiscard]] bool pointsConvex(const geo::ArrayContour2f& points);
+    static bool pointsConvex(const geo::ArrayContour2f& points);
 
     /**
     * @brief Invert vertices order in contour (if need) to make
@@ -66,7 +66,7 @@ public:
     * Maybe this can be a point for the future clipping improvement
     * @param points source points of concave contour
     */
-    static [[nodiscard]] geo::ArrayContours2f
+    static geo::ArrayContours2f
         splitConcaveContour(const geo::ArrayContour2f& points);
 
     /**
@@ -79,9 +79,9 @@ public:
     static std::pair<geo::ArrayContour2f, geo::ArrayContour2f> splitPolyInTwo(const geo::ArrayContour2f& poly);
 
 private:
-    static [[nodiscard]] bool allPointsFromOneSide(const geo::ArrayContour2f& points, int i, int iNext);
-    static [[nodiscard]] bool vertexConvex(const geo::ArrayContour2f& points, int i);
-    static [[nodiscard]] bool edgeInside(const geo::ArrayContour2f& points, int iPrev, int i, int iNext, int j);
+    static bool allPointsFromOneSide(const geo::ArrayContour2f& points, int i, int iNext);
+    static bool vertexConvex(const geo::ArrayContour2f& points, int i);
+    static bool edgeInside(const geo::ArrayContour2f& points, int iPrev, int i, int iNext, int j);
 
 };
 

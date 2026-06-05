@@ -23,9 +23,10 @@
 // meshclip.cpp
 // Clipping of the Mesh3d
 //
-#include <cstdlib>
 #include <cstdint>
+#include <cstdlib>
 #include <utility>
+
 #include "geo.h"
 #include "mesh3d.h"
 #include "mesh3dbuilder.h"
@@ -158,7 +159,7 @@ geo::Mesh3dClip::clipMesh(
 		}
 		else
 		{
-			// clip tringle by plane
+			// clip triangle by plane
 			std::pair<geo::ArrayPoint3f, geo::ArrayPoint3f> pairRes = clipTriangle(triPoints, plane);
 			geo::ArrayPoint3f& pointsPos = pairRes.first;
 			geo::ArrayPoint3f& pointsNeg = pairRes.second;

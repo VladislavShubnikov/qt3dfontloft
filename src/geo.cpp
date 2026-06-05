@@ -55,7 +55,7 @@ geo::Point3f operator+(const geo::Point3f& pa, const geo::Point3f& pb)
 	return { pa.x_ + pb.x_, pa.y_ + pb.y_, pa.z_ + pb.z_ };
 }
 
-geo::Point3f geo::crossProduct(const geo::Point3f& pa, const geo::Point3f& pb)
+geo::Point3f crossProduct(const geo::Point3f& pa, const geo::Point3f& pb)
 {
 	return {
 		(pa.y_ * pb.z_) - (pa.z_ * pb.y_),

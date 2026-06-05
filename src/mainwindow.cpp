@@ -37,34 +37,20 @@
 #include <QTextEdit>
 #include <QTextStream>
 
-
 #include "ui_mainwindow.h"
 #include "mainwindow.h"
 
-
 #include "geo.h"
 #include "contour.h"
-
-// for test 
-#include "testclip.h"
-#include <cassert>
 
 
 // NOLINTNEXTLINE
 MainWindow::MainWindow(QWidget* parent)
     : QMainWindow(parent)
-    , ui_(std::make_unique<Ui::MainWindow>())
+    , ui_(std::make_unique<app::Ui::MainWindow>())
     , glViewWidget_(std::make_unique<GlViewWidget>(parent) )
 {
     ui_->setupUi(this);
-
-    // optional tests
-    const bool needTest{ true };
-    if (needTest)
-    {
-        geo::testRun();
-    }
-  
 
     // replace default QOpenGLWidget to the custom GlViewWidget
     ui_->verticalLayout->replaceWidget(ui_->openGLWidget, glViewWidget_.get());
@@ -121,13 +107,19 @@ void MainWindow::onLoadCharacter(const QString& character)
     if (okRead)
     {
         contourObject.removeDuplicates();
-        contourObject.scaleTo(1.5F);
+        constexpr float kSize{1.5F};
+        contourObject.scaleTo(kSize);
         glViewWidget_->setContour(contourObject);
 
         // UI: clipping disable
         ui_->checkClippped->setChecked(false);
         ui_->sliderAngleY->setEnabled(false);
         ui_->sliderHeight->setEnabled(false);
+    }
+    else
+    {
+        const QString strErr = "Error loaded letter " + character;
+        QMessageBox::critical(this, "Error loading 3D mesh", strErr);
     }
 }
 

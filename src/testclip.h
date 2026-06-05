@@ -21,17 +21,48 @@
 // THE SOFTWARE.
 //
 // testclip.h
-// Tests for mesh clippping functions
+// Tests for mesh clipping functions
 //
 #ifndef TESTCLIP_H
 #define TESTCLIP_H
 
+#include <QtTest>
+
 namespace geo
 {
-	/**
-	* @brief Run simple unit-tests to check clipping geometry functionality correctness
-	*/
-	void testRun();
+
+//! test geometry
+class TestGeo: public QObject
+{
+    Q_OBJECT
+private slots:
+    //! init common data for all tests
+    void initTestCase();
+    //! done common data for all tests
+    void cleanupTestCase();
+
+    //! already convex poly
+    void testMeshPolyConvex();
+    //! wrong clockwise direction
+    void testMeshMakeCCW();
+    //! split concave poly
+    void testSplitConcave();
+    //! check is clipped mesh
+    void testMeshClipCheck();
+    //! check is clipped mesh A
+    void testMeshClipA();
+    //! check is clipped mesh B
+    void testMeshClipB();
+    //! check is clipped line
+    void testLineClip();
+    //! check triangle clip
+    void testTriangleClip();
+    //! check fix mesh with bad vertex
+    void testMeshFix();
+
+
+}; // class TestGeo
+
 } // namespace geo
 
 #endif // TESTCLIP_H

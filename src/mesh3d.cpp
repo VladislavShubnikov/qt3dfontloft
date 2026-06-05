@@ -31,7 +31,7 @@
 
 geo::Mesh3d::~Mesh3d()
 {
-    // use true, if want to check avoiding unnecessary vector's copying
+    // set next constant to true if you want to check avoiding unnecessary vector's copying
     // during mesh copy with move semantics
     const bool needLog{false};
     if (needLog)
@@ -42,9 +42,9 @@ geo::Mesh3d::~Mesh3d()
 }
 
 geo::Mesh3d::Mesh3d(geo::Mesh3d&& other) noexcept
+:vertices_(std::move(other.vertices_))
+,normals_(std::move(other.normals_))
+,indices_(std::move(other.indices_))
 {
-    vertices_ = std::move(other.vertices_);
-    normals_ = std::move(other.normals_);
-    indices_ = std::move(other.indices_);
 }
 

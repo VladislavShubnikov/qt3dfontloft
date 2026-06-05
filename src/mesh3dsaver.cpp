@@ -23,7 +23,6 @@
 // mesh3dsaver.cpp
 // Save 3d mesh to OBJ text format
 //
-#include <cstdint>
 
 #include <QTextStream>
 

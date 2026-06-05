@@ -52,7 +52,7 @@ public:
     Mesh3d(const Mesh3d&) = default;
     //! move assignment
     Mesh3d& operator=(const Mesh3d&) = default;
-    //! in future maybe should repeat gthe same move semantic as in move constructor
+    //! in future maybe should repeat the same move semantic as in move constructor
     Mesh3d& operator=(Mesh3d&&) = default; 
 
     //! destructor

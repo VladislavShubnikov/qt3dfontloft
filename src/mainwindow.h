@@ -34,12 +34,12 @@
 #include <QComboBox>
 
 #include "glviewwidget.h"
+#include "ui_mainwindow.h"
 
-
-namespace Ui
+namespace app::Ui
 {
-    class MainWindow;
-}
+   class MainWindow;
+} // namespace app::Ui
 
 /**
 * @class MainWindow
@@ -51,17 +51,17 @@ class MainWindow: public QMainWindow
 
 public:
     //! constructor with parent widget
-    explicit MainWindow(QWidget *parent = 0);
+    explicit MainWindow(QWidget *parent = nullptr);
     //! destructor
-    ~MainWindow() = default;
+    ~MainWindow() override = default;
 
 private slots:
     void onClipped(int state);
     void onAbout();
 
-    void onActionA() { onLoadCharacter("A"); }
-    void onActionB() { onLoadCharacter("B"); }
-    void onActionI() { onLoadCharacter("I"); }
+    void onActionA() { onLoadCharacter("a"); }
+    void onActionB() { onLoadCharacter("b"); }
+    void onActionI() { onLoadCharacter("i"); }
     void onActionQ() { onLoadCharacter("Q"); }
     void onActionR() { onLoadCharacter("R"); }
     void onActionW() { onLoadCharacter("W"); }
@@ -73,7 +73,7 @@ private:
     void onLoadCharacter(const QString& character);
 
     //! interface from UI
-    std::unique_ptr<Ui::MainWindow> ui_{};
+    std::unique_ptr<app::Ui::MainWindow> ui_{};
 
     //! GL render widget
     std::unique_ptr<GlViewWidget> glViewWidget_{};

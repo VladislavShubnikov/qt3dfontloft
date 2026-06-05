@@ -1,4 +1,7 @@
-cmake_minimum_required(VERSION 4.2)
+cmake_minimum_required(VERSION 3.19)
+
+set(TEST_PRJ "tests_loftviewer")
+project(${TEST_PRJ} VERSION 0.1.0 LANGUAGES C CXX)
 
 set(APP_PRJ "loftviewer")
 project(${APP_PRJ} VERSION 0.1.0 LANGUAGES C CXX)
@@ -45,6 +48,7 @@ if (UNIX)
     set(PLATF "Unix")
 
     set(PLATFORM_COMMON_FLAGS
+        -std=c++20
         -fvisibility=internal
         -fPIC
         -Wno-missing-field-initializers
@@ -69,8 +73,8 @@ if (UNIX)
 
 endif()
 
-set(CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_STANDARD 20)
+set(CXX_STANDARD_REQUIRED ON)
 
 add_compile_options(${PLATFORM_COMMON_FLAGS})
 
@@ -84,6 +88,57 @@ find_package(Qt5 REQUIRED COMPONENTS Widgets OpenGL Test Concurrent Core)
 
 # print current compiler
 message(STATUS "Current c++ compiler is: ${CMAKE_CXX_COMPILER_ID}")
+
+# -------------------------------------------------
+# Test project
+# -------------------------------------------------
+set(TEST_SOURCES
+        src/testmain.cpp
+        src/colorgenerator.cpp
+        src/colorgenerator.h
+        src/contour.cpp
+        src/contour.h
+        src/contourtools.cpp
+        src/contourtools.h
+        src/geo.cpp
+        src/geo.h
+        src/mesh3d.cpp
+        src/mesh3d.h
+        src/mesh3dbuilder.cpp
+        src/mesh3dbuilder.h
+        src/mesh3dsaver.cpp
+        src/mesh3dsaver.h
+        src/meshclip.cpp
+        src/meshclip.h
+        src/meshtrianglebuilder.cpp
+        src/meshtrianglebuilder.h
+        src/meshtools.cpp
+        src/meshtools.h
+        src/plane3d.cpp
+        src/plane3d.h
+        src/testclip.cpp
+        src/testclip.h)
+
+# add resource qrc file
+set (TEST_FILES ${TEST_SOURCES} res/resources.qrc)
+
+add_executable(${TEST_PRJ} ${TEST_FILES})
+
+# Add the Qt5 Widgets for linking
+target_link_libraries(${TEST_PRJ} Qt5::Widgets Qt5::OpenGL Qt5::Concurrent Qt5::Core Qt5::Test)
+
+# select c++20 or later
+if(CMAKE_CXX_COMPILER_ID MATCHES "MSVC")
+    set_property(TARGET ${TEST_PRJ} PROPERTY CXX_STANDARD 20)
+else()
+    set_property(TARGET ${TEST_PRJ} PROPERTY CXX_STANDARD 20)
+endif()
+
+if(CMAKE_CXX_COMPILER_ID MATCHES "MSVC")
+    target_compile_features(${TEST_PRJ} PRIVATE cxx_std_20)
+else()
+    target_compile_features(${TEST_PRJ} PRIVATE cxx_std_20)
+endif()
 
 # -------------------------------------------------
 # Application project
@@ -119,8 +174,6 @@ set(APP_SOURCES
   src/json.hpp
   src/plane3d.cpp
   src/plane3d.h
-  src/testclip.cpp
-  src/testclip.h
   src/mainwindow.ui)
 
 # add resource qrc file

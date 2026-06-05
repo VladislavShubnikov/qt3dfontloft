@@ -62,29 +62,29 @@ public:
 	* @param plane clip plane 
 	* @return true if can be clipped
 	*/
-	static [[nodiscard]] bool canBeClipped(const geo::Mesh3d& mesh, const geo::Plane3d& plane);
+	static bool canBeClipped(const geo::Mesh3d& mesh, const geo::Plane3d& plane);
 
 	/**
 	* @brief Clip mesh by plane
-	* @param mesh Mesh to be cliped
-	* @param plane clipping plabe
+	* @param mesh Mesh to be clipped
+	* @param plane clipping plane
 	* @return pair of meshes, as clipping result
 	*/
-	static [[nodiscard]]  std::pair<geo::Mesh3d, geo::Mesh3d> clipMesh(
+	static std::pair<geo::Mesh3d, geo::Mesh3d> clipMesh(
 		const geo::Mesh3d& mesh, 
 		const geo::Plane3d& plane);
 
 	/**
 	* @brief Check is triangle clipped by plane
-	* @param pointsTri 3 points of trinagle
+	* @param pointsTri 3 points of triangle
 	* @param plane clipping plane
 	* @return Clipping status
 	*/
-	static [[nodiscard]] geo::ClipResult triangleClipped(const ArrayPoint3f& pointsTri, const geo::Plane3d& plane);
+	static geo::ClipResult triangleClipped(const ArrayPoint3f& pointsTri, const geo::Plane3d& plane);
 
 	/**
-	* @brief Clip trinagle by plane
-	* @param pointsTri 3 points of trinagle
+	* @brief Clip triangle by plane
+	* @param pointsTri 3 points of triangle
 	* @param plane clipping plane
 	* @return pair of triangle meshes
 	*/
@@ -102,7 +102,7 @@ public:
 	* @param bPos true if vertex b is on positive side of plane
 	* @return true if line clipped by plane
 	*/
-	static [[nodiscard]] bool lineClipped(
+	static bool lineClipped(
 		const geo::Point3f& va, 
 		const geo::Point3f& vb, 
 		const geo::Plane3d& plane, 
@@ -111,11 +111,11 @@ public:
 		bool& bPos);
 
 	/**
-	* @brief Check mesh for unreferences vertices
+	* @brief Check mesh for unreferenced vertices
 	* @param mesh Mesh to check
-	* @return true if no unreferenceed vertices found
+	* @return true if no unreferenced vertices found
 	*/
-	static [[nodiscard]] bool checkTopology(const geo::Mesh3d& mesh);
+	static bool checkTopology(const geo::Mesh3d& mesh);
 };
 
 } // namespace geo

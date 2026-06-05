@@ -21,7 +21,7 @@
 // THE SOFTWARE.
 //
 // contourtools.cpp
-// Geometry opertations with 2d contour(s)
+// Geometry operations with 2d contour(s)
 //
 
 #include <stack> // NOLINT
@@ -56,7 +56,7 @@ bool geo::ContourTools::allPointsFromOneSide(  // NOLINT
 {
 	const auto numPoints = static_cast<int>(points.size());
 	const geo::Point2f dir0 = points[iNext] - points[iCur];
-	// normal is dir0 , turned by 90 graduses counter clockwise
+	// normal is dir0 , turned by 90 degrees counterclockwise
 	const geo::Point2f normal0{ -dir0.y_ , dir0.x_ };
 
 	bool posSignFound{ false };
@@ -129,7 +129,7 @@ bool geo::ContourTools::pointsConvex(const std::vector<geo::Point2f>& points)  /
 		return false;
 	}
 
-	// search for the first non parallel line segments
+	// search for the first non-parallel line segments
 	found = false;
 	float dotSignStart{ 0.0F };
 
@@ -210,7 +210,7 @@ void geo::ContourTools::makePointsCounterClockwise(std::vector<geo::Point2f>& po
 		return;
 	}
 
-	// search for the first non parallel line segments
+	// search for the first non-parallel line segments
 	found = false;
 	float dotSignStart{ 0.0F };
 	for (; (is < numPoints - 1) && !found; is++)
@@ -237,7 +237,7 @@ void geo::ContourTools::makePointsCounterClockwise(std::vector<geo::Point2f>& po
 
 	if (dotSignStart > 0.0F)
 	{
-		// already in counter clockwise
+		// already in counterclockwise
 		return;
 	}
 
@@ -284,7 +284,7 @@ bool geo::ContourTools::vertexConvex(  // NOLINT
 	const geo::Point2f dir1 = points[iNext] - points[iCur];
 	const geo::Point2f normal0{ -dir0.y_ , dir0.x_ };
 	const float dot = normal0.dotProduct(dir1);
-	// if positive than vertex convex
+	// if dot product is positive then vertex convex
 	constexpr float kSmall{ 1.0e-8F };
 	return dot > kSmall;
 }
@@ -328,7 +328,7 @@ geo::ContourTools::splitPolyInTwo(const geo::ArrayContour2f& poly) // NOLINT
 		{
 			continue;
 		}
-		// find mid dist with others
+		// find middle dist with others
 		const int iPrev = (i > 0) ? (i - 1) : (n - 1);
 		const int iNext = (i + 1 < n) ? (i + 1) : 0;
 		for (int j = 0; j < n; j++)

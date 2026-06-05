@@ -57,7 +57,7 @@ public:
 
     /**
     * @brief Create 3d cylinder mesh.
-    * @param radius cylinde radius
+    * @param radius cylinder radius
     * @param height cylinder height
     * @param numSides number of sides
     * @param outMesh output 3D mesh
@@ -65,7 +65,7 @@ public:
     static void createCylinder(float radius, float height, int numSides, geo::Mesh3d& outMesh);
 
     /**
-    * @brief Parform += v operation on mesh
+    * @brief Perform += v operation on mesh
     * @param vAdd vector to add to all vertices
     * @param outMesh output 3D mesh
     */

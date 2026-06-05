@@ -20,43 +20,11 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 //
-// mesh3dsaver.h
-// Save 3d mesh to OBJ text format
+// testmain.cpp
+// Main entry for special test application
 //
-#ifndef MESH3DSAVER_H
-#define MESH3DSAVER_H
 
-#include <vector>
-#include <QString>
+#include "testclip.h"
 
-#include "mesh3d.h"
-
-namespace geo
-{
-
-/**
-* @class Mesh3dSaver
-* @brief Saver functionality for 3D mesh
-*/
-class Mesh3dSaver
-{
-public:
-	/**
-	* @brief Save single mesh object to OBJ format string
-	* @param mesh input mesh
-	* @return string representation of OBJ file
-	*/
-    static QString saveToObjString(const geo::Mesh3d& mesh);
-
-	/**
-	* @brief Save mesh set to OBJ format string
-	* @param meshes input meshes
-	* @return string representation of OBJ file
-	*/
-	static QString saveToObjString(const std::vector<geo::Mesh3d>& meshes);
-}; // class Mesh3DSaver
-
-} // namespace geo
-
-#endif // MESH3DSAVER_H
- 
+//! main will be insert here
+QTEST_MAIN(geo::TestGeo)

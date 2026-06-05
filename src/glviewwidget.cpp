@@ -52,6 +52,7 @@ GlViewWidget::GlViewWidget(QWidget* parent) // NOLINT
     clipPlane_.normal_.normalize();
 
     setFocusPolicy(Qt::StrongFocus);
+    makeCurrent();
 }
 
 GlViewWidget::~GlViewWidget()
@@ -87,7 +88,7 @@ void GlViewWidget::setContour(const geo::Contour& contourObject) // NOLINT
         glMesh.getMesh().color_ = colorGenerator.nextColor();
         renderMeshes_.push_back(glMesh);
 
-        // save surce mesh
+        // save source mesh
         const geo::Mesh3d meshCopy{ glMesh.getMesh() };
         sourceMeshes_.push_back(meshCopy);
     } // for i, all contours
@@ -109,7 +110,7 @@ void GlViewWidget::setContour(const geo::Contour& contourObject) // NOLINT
         geo::Mesh3dBuilder::createCylinder(1.0F, 2.0F, numSides, meshCylinder); // NOLINT
 
         renderMeshes_.clear();
-        renderMeshes_.push_back(geo::GlMesh3d(meshCylinder));
+        renderMeshes_.emplace_back(meshCylinder);
 
         if (glInitialized_)
         {
@@ -125,7 +126,7 @@ void GlViewWidget::setContour(const geo::Contour& contourObject) // NOLINT
         geo::Mesh3dBuilder::createCube(2.0F, meshBox); // NOLINT
 
         renderMeshes_.clear();
-        renderMeshes_.push_back(geo::GlMesh3d(meshBox));
+        renderMeshes_.emplace_back(meshBox);
 
         if (glInitialized_)
         {
@@ -143,7 +144,7 @@ void GlViewWidget::showSourceMesh() // NOLINT
     renderMeshes_.clear();
     for (geo::Mesh3d& mesh : sourceMeshes_)
     {
-        renderMeshes_.push_back(geo::GlMesh3d(mesh));
+        renderMeshes_.emplace_back(mesh);
     }
     if (glInitialized_)
     {
@@ -199,7 +200,7 @@ const std::string kFragmentShader = R"(
 
 void GlViewWidget::initializeGL()
 {
-    makeCurrent();
+    //makeCurrent();
     initializeOpenGLFunctions();
     // NOLINTBEGIN
     glClearColor(0.999f, 0.999f, 0.999f, 1.0f);
@@ -283,6 +284,11 @@ void GlViewWidget::initializeGL()
     glInitialized_ = true;
 }
 
+void GlViewWidget::resizeGL(int w, int h) // NOLINT
+{
+    viewportWidth_ = w;
+    viewportHeight_ = h;
+}
 
 void GlViewWidget::paintGL() // NOLINT
 {
@@ -300,7 +306,7 @@ void GlViewWidget::paintGL() // NOLINT
     QVector3D target(0.0F, 0.0F, 0.0F);
     QVector3D up(0.0F, 1.0F, 0.0F);
 
-    // final matrix will be: projectionMatrix * viewMatrix * modelMtrix
+    // final matrix will be: projectionMatrix * viewMatrix * modelMatrix
     QMatrix4x4 viewMatrix;
     viewMatrix.setToIdentity();
     viewMatrix.lookAt(eye, target, up);
@@ -309,7 +315,12 @@ void GlViewWidget::paintGL() // NOLINT
     constexpr float kViewAngle{ 45.0F };
     constexpr float kClipMin{0.1F };
     constexpr float kClipMax{ 100.F };
-    projectionMatrix.perspective(kViewAngle, static_cast<float>(width()) / static_cast<float>(height()), kClipMin, kClipMax);
+
+    projectionMatrix.perspective(
+            kViewAngle,
+            static_cast<float>(viewportWidth_) / static_cast<float>(viewportHeight_),
+            kClipMin,
+            kClipMax);
 
     QMatrix4x4 modelMatrix;
     modelMatrix.setToIdentity();
@@ -328,23 +339,23 @@ void GlViewWidget::paintGL() // NOLINT
     const bool needDrawBoxes{false};
     if (needDrawBoxes)
     {
-        meshBoxX_.paintGL(*program_.get());
-        meshBoxY_.paintGL(*program_.get());
-        meshBoxZ_.paintGL(*program_.get());
-        meshBoxZero_.paintGL(*program_.get());
+        meshBoxX_.paintGL(*program_);
+        meshBoxY_.paintGL(*program_);
+        meshBoxZ_.paintGL(*program_);
+        meshBoxZero_.paintGL(*program_);
     }
 
-    // draw piramides as axis
+    // draw pyramids as axis
     if (axisVisible_)
     {
-        meshAxisX_.paintGL(*program_.get());
-        meshAxisY_.paintGL(*program_.get());
-        meshAxisZ_.paintGL(*program_.get());
+        meshAxisX_.paintGL(*program_);
+        meshAxisY_.paintGL(*program_);
+        meshAxisZ_.paintGL(*program_);
     }
 
     for (geo::GlMesh3d& mesh : renderMeshes_)
     {
-        mesh.paintGL(*program_.get());
+        mesh.paintGL(*program_);
     }
 }
 
@@ -369,24 +380,26 @@ void GlViewWidget::clipByPlane() // NOLINT
         const bool hasClip = geo::Mesh3dClip::canBeClipped(mesh3d, clipPlane_);
         if (!hasClip)
         {
-            mesh3d.color_ = {0.5F, 0.5F, 0.5F};
-            meshesNew.push_back(geo::GlMesh3d(mesh3d));
+            constexpr float kHalf{0.5F};
+            mesh3d.color_ = {kHalf, kHalf, kHalf};
+            meshesNew.emplace_back(mesh3d);
             continue;
         }
         auto pairMeshes = geo::Mesh3dClip::clipMesh(mesh3d, clipPlane_);
         geo::Mesh3d& meshPos = pairMeshes.first;
         geo::Mesh3d& meshNeg = pairMeshes.second;
 
-        meshPos.color_ = { 0.0F, 0.9999F, 0.3F };
-        meshNeg.color_ = { 0.9999F, 0.0F, 0.3F };
+        constexpr float k03{0.3F};
+        meshPos.color_ = { 0.0F, geo::kFloatAlmostOne, k03 };
+        meshNeg.color_ = { geo::kFloatAlmostOne, 0.0F, k03 };
 
         const float height2 = clipHeight_ / 2.0F;
 
         geo::Mesh3dBuilder::translateMesh({ height2, 0.0F, 0.0F}, meshPos);
         geo::Mesh3dBuilder::translateMesh({ -height2, 0.0F, 0.0F }, meshNeg);
 
-        meshesNew.push_back(geo::GlMesh3d(meshPos));
-        meshesNew.push_back(geo::GlMesh3d(meshNeg));
+        meshesNew.emplace_back(meshPos);
+        meshesNew.emplace_back(meshNeg);
     }
     renderMeshes_.clear();
     for (const auto& m : meshesNew)
@@ -397,10 +410,10 @@ void GlViewWidget::clipByPlane() // NOLINT
     // create GL data for meshes
     if (glInitialized_)
     {
-        for (geo::GlMesh3d& glmesh : renderMeshes_)
+        for (geo::GlMesh3d& graphMesh : renderMeshes_)
         {
-            glmesh.initGL();
-            glmesh.setupGeometryData();
+            graphMesh.initGL();
+            graphMesh.setupGeometryData();
         }
     }
     // repaint gl widget
@@ -483,7 +496,7 @@ void GlViewWidget::onAngleAroundY(int sliderValue)
 void GlViewWidget::onSliderHeight(int sliderValue) // NOLINT    
 {
     // assume we have source slider values in [0..24] with "central" value == 12
-    // need to transform this range into [0.. 0.24]
+    // need to transform this range into [0..24]
     // 
     // actual input range in [0..100]
     // NOLINTNEXTLINE
@@ -522,7 +535,7 @@ void GlViewWidget::mouseMoveEvent(QMouseEvent* event) // NOLINT
         const int dy = event->pos().y() - mousePrevPos_.y_;
         if ((dx != 0) || (dy != 0))
         {
-            rotationAroundYGrad_ += dx;
+            rotationAroundYGrad_ += static_cast<float>(dx);
             // NOLINTBEGIN
             if (rotationAroundYGrad_ < 0.0F)
             {

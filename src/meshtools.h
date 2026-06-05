@@ -40,7 +40,7 @@ class MeshTools
 {
 public:
 	/**
-	* @brief Remove isolated vertices from mesh sfter clipping
+	* @brief Remove isolated vertices from mesh after clipping
 	* @param mesh in and output mesh
 	*/
 	static void fixUnreferencedVertices(geo::Mesh3d& mesh);

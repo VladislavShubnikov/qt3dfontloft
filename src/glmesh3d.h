@@ -61,7 +61,7 @@ public:
 
     //! initialize openGL
     void initGL();
-    //! setup intenal buffers with 3d geometry data
+    //! setup internal buffers with 3d geometry data
     void setupGeometryData();
 
     //! Paint GL function
@@ -90,7 +90,7 @@ private:
 
     bool glInitialized_{ false };
     /**
-    * Here both 3d vertex + 3d noral is stored in the interleaving layout:
+    * Here both 3d vertex + 3d normal is stored in the interleaving layout:
     * x0, y0, z0, nx0, ny0, nz0, x1, y1, z1, nx1, ny1, nz1, ...
     */
     QOpenGLBuffer vboVertices_{ QOpenGLBuffer::VertexBuffer };

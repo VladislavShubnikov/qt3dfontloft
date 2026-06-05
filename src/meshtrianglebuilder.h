@@ -57,9 +57,9 @@ public:
 
 	/**
 	* @brief Add triangle to mesh
-	* @param triVerts added triangle vertices
+	* @param triVertices added triangle vertices
 	*/
-	void addTriangle(const std::vector<geo::Point3f>& triVerts);
+	void addTriangle(const std::vector<geo::Point3f>& triVertices);
 
 private:
 	[[nodiscard]] int findVertex(const geo::Point3f& p) const;

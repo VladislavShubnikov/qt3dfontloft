@@ -42,11 +42,11 @@ constexpr float kDefaultHeight{ 0.12F };
 
 /**
  * @class GlViewWidget
- * @brief Widget with OpenGL render ouput
+ * @brief Widget with OpenGL render output
  * 
  * This widget uses source 3D meshes to create openGL render meshes
  * 
- * @note Wireframe render is not implemehted here
+ * @note Wireframe render is not implemented here
  * 
  */
 class GlViewWidget: public QOpenGLWidget, protected QOpenGLFunctions
@@ -54,9 +54,9 @@ class GlViewWidget: public QOpenGLWidget, protected QOpenGLFunctions
 	Q_OBJECT
 public:
 	//! constructor
-	GlViewWidget(QWidget* parent = nullptr);
+	explicit GlViewWidget(QWidget* parent = nullptr);
 	//! destructor
-	~GlViewWidget();
+	~GlViewWidget() override;
 
 	// NOLINTBEGIN
 	//! copy constructor
@@ -70,7 +70,7 @@ public:
 	// NOLINTEND
 
 	/**
-	* @brief Assign extern 2D font letter contour to the 3d mesh oject.
+	* @brief Assign extern 2D font letter contour to the 3d mesh object.
 	* 3D loft creates here using @ref geo::Mesh3dBuilder
 	* @param contourObject set of input 2d contours
 	*/
@@ -80,7 +80,7 @@ public slots: // NOLINT(cppcoreguidelines-non-private-member-variables-in-classe
 
 
 	/**
-	* @brief Reaction on user interface change in 1st slider: clipping angle vaue set
+	* @brief Reaction on user interface change in 1st slider: clipping angle value set
 	* @param sliderValue Value in [0..90]
 	*/
 	void onAngleAroundY(int sliderValue);
@@ -98,7 +98,7 @@ public slots: // NOLINT(cppcoreguidelines-non-private-member-variables-in-classe
 	void onClipped(int state);
 
 	/**
-	* @brief Switch on/off show artificial 3D axises
+	* @brief Switch on/off show artificial 3D axes
 	* @param state State of the checkbox, see Qt::Checked
 	*/
 	void onAxis(int state);
@@ -121,6 +121,9 @@ protected:
 	*/
 	void paintGL() override;
 
+    //! resize GL
+    void resizeGL(int w, int h) override;
+
 	//! reaction on mouse button press event
 	void mousePressEvent(QMouseEvent* event) override;
 	//! reaction on mouse button release event
@@ -129,7 +132,7 @@ protected:
 	void mouseMoveEvent(QMouseEvent* event) override;
 	//! reaction on mouse wheel event
 	void wheelEvent(QWheelEvent* event) override;
-	//! reaction on keybord key press event
+	//! reaction on keyboard key press event
 	void keyPressEvent(QKeyEvent* event) override;
 
 private:
@@ -149,7 +152,7 @@ private:
 	*/
 	void saveMeshesToObj();
 
-	//! rotation around vertical axis in graduses
+	//! rotation around vertical axis in degrees
 	float rotationAroundYGrad_{ 0.0F };
 
 	//! rotation around right vector
@@ -166,6 +169,10 @@ private:
 
 	//! mouse prev coord
 	geo::Point2d mousePrevPos_{};
+
+    //! viewport width
+    int viewportWidth_{0};
+    int viewportHeight_{0};
 
 	//! special flag to avoid init GL again for new contour
 	bool glInitialized_{ false };

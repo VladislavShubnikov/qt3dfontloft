@@ -58,24 +58,24 @@ int geo::MeshTriangleBuilder::addVertex(const geo::Point3f& p)
 	return static_cast<int>(mesh_.get().vertices_.size()) - 1;
 }
 
-void geo::MeshTriangleBuilder::addTriangle(const std::vector<geo::Point3f>& triVerts)
+void geo::MeshTriangleBuilder::addTriangle(const std::vector<geo::Point3f>& triVertices)
 {
 	constexpr int k2{ 2 };
 	constexpr int k3{ 3 };
-	std::array<int, k3> indices;
+	std::array<int, k3> indices{};
 
 	for (int i = 0; i < k3; i++)
 	{
-		int ind = findVertex(triVerts[i]);
+		int ind = findVertex(triVertices[i]);
 		if (ind < 0)
 		{
-			ind = addVertex(triVerts[i]);
+			ind = addVertex(triVertices[i]);
 		}
 		indices[i] = ind;
 	}
 	if ((indices[0] == indices[1]) || (indices[0] == indices[k2]) || (indices[1] == indices[k2]))
 	{
-		// degenerated triagle: this is hust line
+		// degenerated triangle: this is hust line
 		return;
 	}
 	mesh_.get().indices_.push_back(indices[0]);
