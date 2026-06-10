@@ -16,7 +16,7 @@
 This is a simple, c++ demonstration project (not part of any commercial software)
 can load some english letters (from 2D contours vector description), creating a 3D loft
 from 2D contour and apply a clipping plane (can be controlled in the application
-user interface).
+user interface). Clipping functionality is separated from QT-related top-level application sources.
 
 ## Prerequisites
 
@@ -93,8 +93,7 @@ src
   - Optimal polygon decompopsition approach (in terms of minimization of number output parts)
   - Approximate polygon decomposition approach
 - Add ref to OBJ viewer
-
   OBJ viewer:
   https://www.meshy.ai/3d-tools/online-viewer/obj
 - In future maybe add "open arbitrary OBJ file" function in menu.
-
+- Separate clipping functionality into a universal library (without any QT dependencies).
