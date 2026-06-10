@@ -8,11 +8,12 @@
 *    [How to build application under Ubuntu 22.04](#how-to-build-application-under-ubuntu-2204)
 *    [User interface](#user-interface)
 *    [Project structure](#project-structure)
+*    [References](#references)
 *    [Things for improvement](#things-for-improvement)
 
 
 ## Introduction
-This is a simple, demonstration project (not part of any commercial software)
+This is a simple, c++ demonstration project (not part of any commercial software)
 can load some english letters (from 2D contours vector description), creating a 3D loft
 from 2D contour and apply a clipping plane (can be controlled in the application
 user interface).
@@ -77,7 +78,20 @@ src
    |-- src             C++ source code
 ```
 
+## References
+- [Polygon decomposition, TypeScript source code](https://github.com/pmndrs/poly-decomp-es)
+- [Computational Geometry Library](https://github.com/CGAL/cgal): [documentation](https://cgal.geometryfactory.com/CGAL/doc/main/Convex_decomposition_3/index.html#Convex_decomposition_3Introduction)
+- [Planar polygon partitioning](https://ics.uci.edu/~dock/manuals/cgal_manual/Partition_2/Chapter_main.html)
+- [Article about monotone polygon partitioning](https://www.cs.cmu.edu/~motionplanning/papers/sbp_papers/o/ch02.pdf)
+- [Plane sweep algorithm](https://www.cs.jhu.edu/~misha/Spring20/04.pdf)
+- [Monotone mountain triangulation](https://www.cs.jhu.edu/~misha/Spring20/05.pdf)
+
+
 ## Things for improvement
+- More deep polygon decomposition algorithm analysis, including comparison (by memory, performance, output quality) with:
+  - Simplest triangulation
+  - Optimal polygon decompopsition approach (in terms of minimization of number output parts)
+  - Approximate polygon decomposition approach
 - Add ref to OBJ viewer
 
   OBJ viewer:
