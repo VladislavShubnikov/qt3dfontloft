@@ -1,6 +1,6 @@
 
 clang-tidy.exe -header-filter='./src' -extra-arg=-std=c++20 src/contour.cpp
-clang-tidy.exe -header-filter='./src' -extra-arg=-std=c++20 src/contourtools.cpp
+clang-tidy.exe -header-filter='./src' -extra-arg=-std=c++20 src/contoursplitter.cpp
 clang-tidy.exe -extra-arg=-std=c++20 src/geo.cpp
 clang-tidy.exe -header-filter='./src' -extra-arg=-std=c++20 src/glmesh3d.cpp
 clang-tidy.exe -extra-arg=-std=c++20 src/glviewwidget.cpp

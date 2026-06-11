@@ -34,7 +34,7 @@
 #include <QMessageBox>
 
 #include "contour.h"
-#include "contourtools.h" // NOLINT
+#include "contoursplitter.h" // NOLINT
 #include "geo.h"
 #include "glmesh3d.h"
 #include "meshclip.h" // NOLINT
@@ -79,7 +79,7 @@ void GlViewWidget::setContour(const geo::Contour& contourObject) // NOLINT
     for (int i = 0; i < numSrcContours; i++)
     {
         geo::ArrayContour2f pointsCopy = contoursArray[i];
-        geo::ContourTools::makePointsCounterClockwise(pointsCopy);
+        geo::ContourSplitter::makePointsCounterClockwise(pointsCopy);
 
         geo::GlMesh3d glMesh;
         const float yMin{ -0.5F };

@@ -20,53 +20,34 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 //
-// testclip.h
-// Tests for mesh clipping functions
-//
-#ifndef TESTCLIP_H
-#define TESTCLIP_H
+// Measure time for given code range
+// between constructor and getMilliseconds function call
 
-#include <QtTest>
+#ifndef DURATION_H
+#define DURATION_H
 
-namespace geo
+#include <chrono>
+
+namespace timer
 {
 
-//! test geometry
-class TestGeo: public QObject
+class Duration
 {
-    Q_OBJECT
-private slots:
-    //! init common data for all tests
-    void initTestCase();
-    //! done common data for all tests
-    void cleanupTestCase();
+public:
+    explicit Duration();
+    ~Duration() = default;
 
-    //! already convex poly
-    void testMeshPolyConvex();
-    //! wrong clockwise direction
-    void testMeshMakeCCW();
-    //! split concave poly with bridge approach
-    void testSplitConcaveByBridge();
-    //! split concave poly with triangulation approach
-    void testSplitConcaveByTriangulation();
-    //! split large circle with one concave vertex
-    void testSplitLargeCircle();
-    //! check is clipped mesh
-    void testMeshClipCheck();
-    //! check is clipped mesh A
-    void testMeshClipA();
-    //! check is clipped mesh B
-    void testMeshClipB();
-    //! check is clipped line
-    void testLineClip();
-    //! check triangle clip
-    void testTriangleClip();
-    //! check fix mesh with bad vertex
-    void testMeshFix();
+   double getMilliseconds() const;
 
+   Duration(const Duration& ) = delete;
+   Duration& operator=(const Duration& ) = delete;
+   Duration(Duration&& ) = delete;
+   Duration& operator=(Duration&& ) = delete;
 
-}; // class TestGeo
+private:
+    std::chrono::steady_clock::time_point startTime_;
+};
 
-} // namespace geo
+} // namespace timer
 
-#endif // TESTCLIP_H
+#endif

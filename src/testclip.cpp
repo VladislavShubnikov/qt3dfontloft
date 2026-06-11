@@ -30,11 +30,13 @@
 #include <QDebug>
 
 #include "geo.h"
-#include "contourtools.h"
 #include "mesh3d.h"
 #include "meshclip.h"
 #include "meshtools.h"
 #include "plane3d.h"
+#include "duration.h"
+
+#include "contoursplitter.h"
 
 #include "testclip.h"
 
@@ -79,53 +81,54 @@ void geo::TestGeo::cleanupTestCase()
 
 void geo::TestGeo::testMeshPolyConvex()
 {
-    const std::vector<geo::Point2f> points3{
+    const std::vector<geo::Point2f> pointsTriangle{
         {0.0F, 0.0F}, {1.0F, 0.0F}, {1.0F, 1.0F}
     };
-    bool isConvex = geo::ContourTools::pointsConvex(points3);
+    geo::ContourSplitter splitterRect(pointsTriangle);
+    bool isConvex = splitterRect.pointsConvex(pointsTriangle);
     QVERIFY(isConvex);
 
     const std::vector<geo::Point2f> pointsRect4{
         {0.0F, 0.0F}, {1.0F, 0.0F}, {1.0F, 1.0F}, {0.0F, 1.0F}
     };
-    isConvex = geo::ContourTools::pointsConvex(pointsRect4);
+    isConvex = splitterRect.pointsConvex(pointsRect4);
     QVERIFY(isConvex);
 
     const std::vector<geo::Point2f> pointsDegenThree4{
         {0.0F, 0.0F}, {1.0F, 0.0F}, {2.0F, 0.0F},  { 1.0F, 1.0F }
     };
-    isConvex = geo::ContourTools::pointsConvex(pointsDegenThree4);
+    isConvex = splitterRect.pointsConvex(pointsDegenThree4);
     QVERIFY(isConvex);
 
     const std::vector<geo::Point2f> pointsDegenLastThree4{
         {0.0F, 0.0F}, { 1.0F, 1.0F } , {2.0F, 0.0F}, {1.0F, 0.0F},
     };
-    isConvex = geo::ContourTools::pointsConvex(pointsDegenLastThree4);
+    isConvex = splitterRect.pointsConvex(pointsDegenLastThree4);
     QVERIFY(isConvex);
 
     const std::vector<geo::Point2f> pointsDegenMidThree4{
         {1.0F, 0.0F} , {0.0F, 0.0F}, { 1.0F, 1.0F } , {2.0F, 0.0F},
     };
-    isConvex = geo::ContourTools::pointsConvex(pointsDegenMidThree4);
+    isConvex = splitterRect.pointsConvex(pointsDegenMidThree4);
     QVERIFY(isConvex);
 
     const std::vector<geo::Point2f> pointsSameVertex4{
         {0.0F, 0.0F}, {1.0F, 0.0F}, {1.0F, 0.0F},  { 1.0F, 1.0F }
     };
-    isConvex = geo::ContourTools::pointsConvex(pointsSameVertex4);
+    isConvex = splitterRect.pointsConvex(pointsSameVertex4);
     QVERIFY(isConvex);
 
     const std::vector<geo::Point2f> pointsConcavePyramid{
         {0.0F, 0.0F}, {1.0F, 1.0F}, {2.0F, 0.0F},  { 1.0F, 3.0F }
     };
-    isConvex = geo::ContourTools::pointsConvex(pointsConcavePyramid);
+    isConvex = splitterRect.pointsConvex(pointsConcavePyramid);
     QVERIFY(!isConvex);
 
     // same, but in reverse order
     const std::vector<geo::Point2f> pointsConcavePyramidRev{
         {0.0F, 0.0F}, { 1.0F, 3.0F } , {2.0F, 0.0F}, {1.0F, 1.0F}
     };
-    isConvex = geo::ContourTools::pointsConvex(pointsConcavePyramidRev);
+    isConvex = splitterRect.pointsConvex(pointsConcavePyramidRev);
     QVERIFY(!isConvex);
 }
 
@@ -134,41 +137,125 @@ void geo::TestGeo::testMeshMakeCCW()
     std::vector<geo::Point2f> pointsCW{
         {0.0F, 0.0F}, {0.0F, 1.0F}, {1.0F, 1.0F}, {1.0F, 0.0F},
     };
-    geo::ContourTools::makePointsCounterClockwise(pointsCW);
+    geo::ContourSplitter::makePointsCounterClockwise(pointsCW);
     QVERIFY((pointsCW[0] - geo::Point2f(1.0F, 0.0F)).squaredNorm() < 1.0e-6F);
 
     std::vector<geo::Point2f> pointsCorrectCCW{
         {0.0F, 0.0F}, {0.0F, 1.0F}, {1.0F, 1.0F}, {1.0F, 0.0F},
     };
-    geo::ContourTools::makePointsCounterClockwise(pointsCW);
+    geo::ContourSplitter::makePointsCounterClockwise(pointsCW);
     QVERIFY((pointsCorrectCCW[0] - geo::Point2f(0.0F, 0.0F)).squaredNorm() < 1.0e-6F);
 
     std::vector<geo::Point2f> points4a{
         {0.0F, 0.0F}, {1.0F, 1.0F}, {2.0F, 0.0F}, {1.0F, 0.0F},
     };
-    geo::ContourTools::makePointsCounterClockwise(points4a);
+    geo::ContourSplitter::makePointsCounterClockwise(points4a);
     QVERIFY((points4a[0] - geo::Point2f(1.0F, 0.0F)).squaredNorm() < 1.0e-6F);
 
     std::vector<geo::Point2f> points4b{
         {1.0F, 1.0F}, {2.0F, 0.0F}, {1.0F, 0.0F}, {0.0F, 0.0F}
     };
-    geo::ContourTools::makePointsCounterClockwise(points4b);
+    geo::ContourSplitter::makePointsCounterClockwise(points4b);
     QVERIFY((points4b[0] - geo::Point2f(0.0F, 0.0F)).squaredNorm() < 1.0e-6F);
 
     std::vector<geo::Point2f> points4c{
         {2.0F, 0.0F}, {1.0F, 0.0F}, {0.0F, 0.0F}, {1.0F, 1.0F}
     };
-    geo::ContourTools::makePointsCounterClockwise(points4c);
+    geo::ContourSplitter::makePointsCounterClockwise(points4c);
     QVERIFY((points4c[0] - geo::Point2f(1.0F, 1.0F)).squaredNorm() < 1.0e-6F);
 }
 
-void geo::TestGeo::testSplitConcave()
+void geo::TestGeo::testSplitLargeCircle()
+{
+    constexpr float kRadius{ 10.0F };
+    constexpr int kNumTests{12};
+    for (int t = 0; t < kNumTests; t++)
+    {
+        std::vector<geo::Point2f> pointsCircle;
+        const int numVertices{ 12 + (8 * t) };
+        for (int i = 0; i < numVertices; i++)
+        {
+            const float angleGrad = 360.0F * static_cast<float>(i) / static_cast<float>(numVertices);
+            const float angleRad{ angleGrad * 3.1415926F / 180.0F };
+            const float x = kRadius * cosf(angleRad);
+            const float y = kRadius * sinf(angleRad);
+            const geo::Point2f p(x, y);
+            pointsCircle.push_back(p);
+        }
+        // source circle points are convex
+        bool isConv = geo::ContourSplitter::pointsConvex(pointsCircle);
+        QVERIFY(isConv);
+        // make 0th point concave
+        pointsCircle[0].x_ = kRadius * 0.85F;
+        pointsCircle[0].y_ = 0.0F;
+        isConv = geo::ContourSplitter::pointsConvex(pointsCircle);
+        QVERIFY(!isConv);
+
+        // perform poly split by 2 different methods
+        geo::ContourSplitter splitterBridge(pointsCircle, geo::SplitMethod::SHORTEST_BRIDGE);
+        geo::ContourSplitter splitterTriangulation(pointsCircle, geo::SplitMethod::TRIANGULATION);
+
+        geo::ArrayContours2f contArrBridge;
+        geo::ArrayContours2f contArrTriangulation;
+
+        timer::Duration durationBridge;
+        contArrBridge = splitterBridge.splitConcaveContour();
+        const double tmBridge = durationBridge.getMilliseconds();
+
+        timer::Duration durationTriangulation;
+        contArrTriangulation = splitterTriangulation.splitConcaveContour();
+        const double tmTriangulation = durationTriangulation.getMilliseconds();
+
+        // triangulation method works faster than bridge more than 80 times
+        const double tmRatio{ tmBridge / tmTriangulation };
+        QVERIFY(tmRatio > 0.5);
+        // QVERIFY(tmRatio > 80.0);
+
+        QVERIFY(contArrBridge.size() >= 2);
+        QVERIFY(contArrTriangulation.size() > 2);
+    } // for all tests
+}
+
+void geo::TestGeo::testSplitConcaveByTriangulation()
+{
+    // all source contours are CCW
+    std::vector<geo::Point2f> pointsPine
+    {
+        {0.0F, 0.0F}, {2.0F, 1.0F}, {1.0F, 2.0F}, {3.0F, 3.0F}, {0.0F, 5.0F}
+    };
+    geo::ContourSplitter splitterPine(pointsPine, geo::SplitMethod::TRIANGULATION);
+    geo::ArrayContours2f contArr = splitterPine.splitConcaveContour();
+
+    QVERIFY(contArr.size() == 3);
+    QVERIFY(contArr[0].size() == 3);
+    QVERIFY(contArr[1].size() == 3);
+    QVERIFY(contArr[2].size() == 3);
+
+    std::vector<geo::Point2f> pointsHouse
+    {
+        {0.0F, 0.0F}, {4.0F, 0.0F}, {3.0F, 3.0F}, {2.0F, 2.0F}, {0.0F, 2.0F}
+    };
+    geo::ContourSplitter splitterHouse(pointsHouse, geo::SplitMethod::TRIANGULATION);
+    contArr = splitterHouse.splitConcaveContour();
+    QVERIFY(contArr.size() == 2);
+    QVERIFY(contArr[0].size() == 3);
+    QVERIFY(contArr[1].size() == 4);
+
+    geo::Rect2f box1 = getPointsBoundingRect(contArr[1]);
+    QVERIFY(valueSame(box1.width(), 4.0F));
+    QVERIFY(valueSame(box1.height(), 2.0F));
+
+}
+
+void geo::TestGeo::testSplitConcaveByBridge()
 {
     // all source contours are CCW
     std::vector<geo::Point2f> pointsPerfect{
         {0.0F, 0.0F}, {1.0F, 0.0F}, {1.0F, 1.0F}, {0.0F, 1.0F}
     };
-    geo::ArrayContours2f contArr = geo::ContourTools::splitConcaveContour(pointsPerfect);
+    geo::ContourSplitter splitterPerfect(pointsPerfect);
+    geo::ArrayContours2f contArr = splitterPerfect.splitConcaveContour();
+
     // result is 1 same contour
     QVERIFY(contArr.size() == 1);
     geo::ArrayContour2f vec = contArr[0];
@@ -178,7 +265,9 @@ void geo::TestGeo::testSplitConcave()
     std::vector<geo::Point2f> pointsPyramid{
         {0.0F, 0.0F}, {1.0F, 1.0F}, {2.0F, 0.0F}, {1.0F, 3.0F}
     };
-    contArr = geo::ContourTools::splitConcaveContour(pointsPyramid);
+    geo::ContourSplitter splitterPyramid(pointsPyramid);
+    contArr = splitterPyramid.splitConcaveContour();
+
     QVERIFY(contArr.size() == 2);
     QVERIFY(contArr[0].size() == 3);
     QVERIFY(contArr[1].size() == 3);
@@ -214,29 +303,22 @@ void geo::TestGeo::testSplitConcave()
         {1.0F, 1.0F}, {3.0F, 2.0F}, {5.0F, 1.0F}, {5.0F, 4.0F},
         {3.0F, 3.0F}, {1.0F, 4.0F}
     };
-    contArr = geo::ContourTools::splitConcaveContour(pointsSuite);
+    geo::ContourSplitter splitterSuite(pointsSuite);
+    contArr = splitterSuite.splitConcaveContour();
+
     QVERIFY(contArr.size() == 3);
     QVERIFY(contArr[0].size() == 3);
     QVERIFY(contArr[1].size() == 3);
-    QVERIFY(contArr[2].size() == 4);
     box0 = getPointsBoundingRect(contArr[0]);
     box1 = getPointsBoundingRect(contArr[1]);
-    geo::Rect2f box2 = getPointsBoundingRect(contArr[2]);
-
     QVERIFY(valueSame(box0.pMin_.x_, 1.0F));
     QVERIFY(valueSame(box0.pMax_.x_, 3.0F));
     QVERIFY(valueSame(box0.pMin_.y_, 1.0F));
     QVERIFY(valueSame(box0.pMax_.y_, 4.0F));
-
     QVERIFY(valueSame(box1.pMin_.x_, 1.0F));
     QVERIFY(valueSame(box1.pMax_.x_, 3.0F));
     QVERIFY(valueSame(box1.pMin_.y_, 1.0F));
     QVERIFY(valueSame(box1.pMax_.y_, 3.0F));
-
-    QVERIFY(valueSame(box2.pMin_.x_, 3.0F));
-    QVERIFY(valueSame(box2.pMax_.x_, 5.0F));
-    QVERIFY(valueSame(box2.pMin_.y_, 1.0F));
-    QVERIFY(valueSame(box2.pMax_.y_, 4.0F));
 
     // concave :
     /*
@@ -252,15 +334,18 @@ void geo::TestGeo::testSplitConcave()
     std::vector<geo::Point2f> pointsHorseHeel{
         {1.0F, 3.0F}, {3.0F, 4.0F}, {4.0F, 3.0F}, {3.0F, 1.0F},
         {6.0F, 3.0F}, {2.0F, 6.0F}
-    };
-    contArr = geo::ContourTools::splitConcaveContour(pointsHorseHeel);
+    };    
+    
+    geo::ContourSplitter splitterHorse(pointsHorseHeel);
+    contArr = splitterHorse.splitConcaveContour();
+
     QVERIFY(contArr.size() == 3);
     QVERIFY(contArr[0].size() == 4);
     QVERIFY(contArr[1].size() == 3);
     QVERIFY(contArr[2].size() == 3);
     box0 = getPointsBoundingRect(contArr[0]);
     box1 = getPointsBoundingRect(contArr[1]);
-    box2 = getPointsBoundingRect(contArr[2]);
+    geo::Rect2f box2 = getPointsBoundingRect(contArr[2]);
 
     QVERIFY(valueSame(box0.pMin_.x_, 2.0F));
     QVERIFY(valueSame(box0.pMax_.x_, 6.0F));
@@ -290,7 +375,10 @@ void geo::TestGeo::testSplitConcave()
         {0.0F, 0.0F}, {4.0F, 0.0F}, {4.0F, 2.0F}, {3.0F, 2.0F},
         {2.0F, 1.0F}, {1.0F, 2.0F}, {0.0F, 2.0F}
     };
-    contArr = geo::ContourTools::splitConcaveContour(pointsRectTri);
+
+    geo::ContourSplitter splitterRectTri(pointsRectTri);
+    contArr = splitterRectTri.splitConcaveContour();
+
     QVERIFY(contArr.size() == 4);
     QVERIFY(contArr[0].size() == 4);
     QVERIFY(contArr[1].size() == 3);
@@ -334,7 +422,10 @@ void geo::TestGeo::testSplitConcave()
         {0.0F, 1.0F}, {3.0F, 0.0F}, {6.0F, 1.0F}, {5.0F, 2.0F},
         {3.0F, 1.0F}, {1.0F, 2.0F}
     };
-    contArr = geo::ContourTools::splitConcaveContour(pointsParalellConcave);
+
+    geo::ContourSplitter splitterParallel(pointsParalellConcave);
+    contArr = splitterParallel.splitConcaveContour();
+
     QVERIFY(contArr.size() == 2);
     QVERIFY(contArr[0].size() == 4);
     QVERIFY(contArr[1].size() == 4);

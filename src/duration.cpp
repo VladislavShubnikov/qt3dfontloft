@@ -20,53 +20,36 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 //
-// testclip.h
-// Tests for mesh clipping functions
-//
-#ifndef TESTCLIP_H
-#define TESTCLIP_H
+// Measure time for given code range
+// between constructor and getMilliseconds function call
 
-#include <QtTest>
 
-namespace geo
+#include <iostream>
+#include <chrono>
+#include <cstdint>
+
+#include "duration.h"
+
+
+timer::Duration::Duration()
+:startTime_(std::chrono::steady_clock::now())
 {
+}
 
-//! test geometry
-class TestGeo: public QObject
+double timer::Duration::getMilliseconds() const
 {
-    Q_OBJECT
-private slots:
-    //! init common data for all tests
-    void initTestCase();
-    //! done common data for all tests
-    void cleanupTestCase();
+    try 
+    {
+        const auto endTime = std::chrono::steady_clock::now();
+        const auto dur = endTime - startTime_;
+        const int64_t dtMicro = 
+            std::chrono::duration_cast<std::chrono::microseconds>(dur).count();
+        const double dtMilli = static_cast<double>(dtMicro) / 1000.0;
+        return dtMilli;
+    } catch (...)
+    {
+        std::cout << "Error in ~LogDuration" << "\n";
+    }
+    return 0.0;
+}
 
-    //! already convex poly
-    void testMeshPolyConvex();
-    //! wrong clockwise direction
-    void testMeshMakeCCW();
-    //! split concave poly with bridge approach
-    void testSplitConcaveByBridge();
-    //! split concave poly with triangulation approach
-    void testSplitConcaveByTriangulation();
-    //! split large circle with one concave vertex
-    void testSplitLargeCircle();
-    //! check is clipped mesh
-    void testMeshClipCheck();
-    //! check is clipped mesh A
-    void testMeshClipA();
-    //! check is clipped mesh B
-    void testMeshClipB();
-    //! check is clipped line
-    void testLineClip();
-    //! check triangle clip
-    void testTriangleClip();
-    //! check fix mesh with bad vertex
-    void testMeshFix();
-
-
-}; // class TestGeo
-
-} // namespace geo
-
-#endif // TESTCLIP_H

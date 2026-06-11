@@ -98,10 +98,12 @@ set(TEST_SOURCES
         src/colorgenerator.h
         src/contour.cpp
         src/contour.h
-        src/contourtools.cpp
-        src/contourtools.h
+        src/contoursplitter.cpp
+        src/contoursplitter.h
         src/geo.cpp
         src/geo.h
+        src/duration.cpp
+        src/duration.h
         src/mesh3d.cpp
         src/mesh3d.h
         src/mesh3dbuilder.cpp
@@ -149,8 +151,8 @@ set(APP_SOURCES
   src/colorgenerator.h
   src/contour.cpp
   src/contour.h
-  src/contourtools.cpp
-  src/contourtools.h
+  src/contoursplitter.cpp
+  src/contoursplitter.h
   src/geo.cpp
   src/geo.h
   src/glviewwidget.cpp
